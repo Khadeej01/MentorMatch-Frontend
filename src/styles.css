@@ -4,6 +4,51 @@
 
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+  --text-strong: #0d141c;
+  --text-muted: #64748b;
+  --border: #cbd5e1;
+  --surface: #ffffff;
+  --background: #f1f5f9;
+
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+
+  --secondary-50: #ccfbf1;
+  --secondary-600: #0d9488;
+
+  --accent-500: #f59e0b;
+
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #0284c7;
+}
+
+.btn-primary {
+  background-color: var(--primary-600);
+  color: #fff;
+}
+.btn-primary:hover { background-color: var(--primary-700); }
+
+.btn-secondary {
+  background-color: var(--secondary-50);
+  color: var(--secondary-600);
+}
+
+.surface-card { background-color: var(--surface); }
+.muted { color: var(--text-muted); }
+.bordered { border-color: var(--border); }
+
+.section-background {
+  background:
+    radial-gradient(900px 500px at 0% 0%, var(--primary-50) 0%, rgba(255,255,255,0) 60%),
+    radial-gradient(900px 500px at 100% 100%, var(--secondary-50) 0%, rgba(255,255,255,0) 60%),
+    var(--background);
+}
+
 .full-background {
   background-image: linear-gradient(rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%), url("assets/pexels-fauxels-3184339.jpg");
   background-size: contain;
