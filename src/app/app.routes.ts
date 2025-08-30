@@ -13,6 +13,7 @@ import { MentorFormComponent } from './features/mentor-management/mentor-form/me
 import { AdminDashboardComponent } from './features/admin-dashboard/admin-dashboard.component';
 import { LearnerListComponent } from './features/learner-management/learner-list/learner-list.component';
 import { LearnerFormComponent } from './features/learner-management/learner-form/learner-form.component';
+import { MentorDetailComponent } from './features/mentor-detail/mentor-detail.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -67,6 +68,11 @@ export const routes: Routes = [
     component: LearnerFormComponent,
     canActivate: [authGuard, roleGuard],
     data: { expectedRole: 'admin' }
+  },
+  {
+    path: 'mentors/:id',
+    component: MentorDetailComponent,
+    canActivate: [authGuard] // Accessible to all logged-in users
   },
   {
     path: 'learners/:id/edit',
