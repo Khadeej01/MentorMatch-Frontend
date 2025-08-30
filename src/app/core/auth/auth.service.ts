@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 
 export interface User {
   id: string;
@@ -10,18 +11,12 @@ export interface User {
 }
 
 export interface AuthResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: User;
 }
 
 const AUTH_DATA_KEY = 'auth-data';
-
-// Mock user database
-const MOCK_USERS: User[] = [
-  { id: '1', email: 'mentor@example.com', fullName: 'Mentor User', role: 'mentor' },
-  { id: '2', email: 'learner@example.com', fullName: 'Learner User', role: 'learner' },
-  { id: '3', email: 'admin@example.com', fullName: 'Admin User', role: 'admin' },
-];
 
 @Injectable({
   providedIn: 'root'
