@@ -65,6 +65,7 @@
       <li><a routerLink="/sign-in" class="block text-sm px-2 py-4 text-[#121517] hover:bg-[#f1f2f4] font-semibold">Log in</a></li>
     </ng-container>
     <ng-container *ngIf="isLoggedIn()">
+      <li><span class="block text-sm px-2 py-4 text-[#121517] font-semibold">{{ currentUser?.fullName }}</span></li>
       <li><a (click)="signOut()" class="block text-sm px-2 py-4 text-[#121517] hover:bg-[#f1f2f4] font-semibold">Sign Out</a></li>
     </ng-container>
   </ul>

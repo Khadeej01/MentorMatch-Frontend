@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { Observable, of, throwError, BehaviorSubject } from 'rxjs';
+import { delay, tap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 export interface User {
@@ -24,20 +24,31 @@ const AUTH_DATA_KEY = 'auth-data';
 export class AuthService {
 
   private apiUrl = 'http://localhost:3000/api/auth'; // Placeholder for your backend API URL
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser$: Observable<User | null>;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.currentUserSubject = new BehaviorSubject<User | null>(this.getAuthData()?.user || null);
+    this.currentUser$ = this.currentUserSubject.asObservable();
+  }
 
   signIn(credentials: {email: string, password: string}): Observable<AuthResponse> {
     // Simulate HTTP POST request to /login
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(res => this.setAuthData(res))
+      tap(res => {
+        this.setAuthData(res);
+        this.currentUserSubject.next(res.user);
+      })
     );
   }
 
   signUp(userData: {fullName: string, email: string, password: string, role: 'mentor' | 'learner'}): Observable<AuthResponse> {
     // Simulate HTTP POST request to /register
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
-      tap(res => this.setAuthData(res))
+      tap(res => {
+        this.setAuthData(res);
+        this.currentUserSubject.next(res.user);
+      })
     );
   }
 
@@ -86,8 +97,21 @@ export class AuthService {
 
     return of(response).pipe(
       delay(500),
-      tap(res => this.setAuthData(res))
+      tap(res => {
+        this.setAuthData(res);
+        this.currentUserSubject.next(res.user);
+      })
     );
+  }
+
+  getUserProfile(): Observable<User> {
+    // Simulate HTTP GET request to /me
+    const authData = this.getAuthData();
+    if (authData && authData.user) {
+      return of(authData.user).pipe(delay(500)); // Return current user from stored data
+    } else {
+      return throwError(() => new Error('User not logged in.'));
+    }
   }
 
   getUserRole(): 'mentor' | 'learner' | 'admin' | null {
@@ -101,5 +125,6 @@ export class AuthService {
 
   signOut(): void {
     localStorage.removeItem(AUTH_DATA_KEY);
+    this.currentUserSubject.next(null);
   }
 }

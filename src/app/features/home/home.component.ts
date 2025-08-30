@@ -11,27 +11,10 @@ import { FooterComponent } from '../../core/footer/footer.component';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  mentors = [
-    {
-      name: 'John Doe',
-      role: 'Software Engineer at Google',
-      bio: 'I am a software engineer with 10 years of experience in web development.',
-      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-    },
-    {
-      name: 'Jane Smith',
-      role: 'Product Manager at Microsoft',
-      bio: 'I am a product manager with a passion for building great products.',
-      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-    },
-    {
-      name: 'Samuel Green',
-      role: 'UX Designer at Apple',
-      bio: 'I am a UX designer with a focus on creating user-centered designs.',
-      imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-    }
-  ];
-
+  mentors: Mentor[] = [];
+  filteredMentors: Mentor[] = [];
+  availableSpecialties: string[] = [];
+  selectedSpecialty: string = '';
   searchTerm: string = '';
 
   private slideshowTimerId: any;
@@ -51,6 +34,47 @@ export class HomeComponent implements OnInit, OnDestroy {
   heroStyleB: { [key: string]: string } = {};
   heroOpacityA = 1;
   heroOpacityB = 0;
+
+  import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { FooterComponent } from '../../core/footer/footer.component';
+import { MentorService } from '../../data/mentor.service';
+import { Mentor } from '../../domain/mentor.model';
+
+@Component({
+  selector: 'app-home',
+  standalone: true,
+  imports: [CommonModule, FormsModule, FooterComponent],
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
+})
+export class HomeComponent implements OnInit, OnDestroy {
+  mentors: Mentor[] = [];
+  filteredMentors: Mentor[] = [];
+  availableSpecialties: string[] = [];
+  selectedSpecialty: string = '';
+  searchTerm: string = '';
+
+  private slideshowTimerId: any;
+  private currentImageIndex = 0;
+  private activeLayerA = true;
+
+  // Add your image files here - they should be in src/assets/
+  heroImages: string[] = [
+    'assets/pexels-fauxels-3184339.jpg',
+    'assets/pexels-airamdphoto-15189552.jpg',
+    'assets/pexels-cottonbro-6766999.jpg',
+    'assets/pexels-ivan-samkov-7213210.jpg',
+    'assets/pexels-airamdphoto-15189552.jpg'
+  ];
+
+  heroStyleA: { [key: string]: string } = {};
+  heroStyleB: { [key: string]: string } = {};
+  heroOpacityA = 1;
+  heroOpacityB = 0;
+
+  constructor(private mentorService: MentorService) { }
 
   ngOnInit(): void {
     // Initialize first image on layer A
@@ -80,7 +104,55 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.currentImageIndex = nextIndex;
       }, 4000); // switch every 4 seconds
     }
+
+    this.mentorService.getMentors().subscribe(mentors => {
+      this.mentors = mentors;
+      this.filteredMentors = mentors;
+      this.availableSpecialties = [...new Set(mentors.map(m => m.specialty))];
+    });
   }
+
+  ngOnDestroy(): void {
+    if (this.slideshowTimerId) {
+      clearInterval(this.slideshowTimerId);
+    }
+  }
+
+  private setLayerStyle(layer: 'A' | 'B', url: string): void {
+    const style = {
+      'background-image': `linear-gradient(rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%), url('${url}')`,
+      'background-size': 'contain',
+      'background-position': 'top center',
+      'background-repeat': 'no-repeat',
+      'background-color': '#f1f5f9'
+    };
+    if (layer === 'A') {
+      this.heroStyleA = style;
+    } else {
+      this.heroStyleB = style;
+    }
+  }
+
+  filterMentors(): void {
+    let tempMentors = this.mentors;
+
+    // Apply specialty filter
+    if (this.selectedSpecialty) {
+      tempMentors = tempMentors.filter(mentor => mentor.specialty === this.selectedSpecialty);
+    }
+
+    // Apply search term filter
+    if (this.searchTerm) {
+      const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
+      tempMentors = tempMentors.filter(mentor => 
+        mentor.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+        mentor.bio.toLowerCase().includes(lowerCaseSearchTerm)
+      );
+    }
+
+    this.filteredMentors = tempMentors;
+  }
+}
 
   ngOnDestroy(): void {
     if (this.slideshowTimerId) {

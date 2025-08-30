@@ -1,7 +1,8 @@
-import { Component, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth/auth.service';
+import { AuthService, User } from '../auth/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -10,12 +11,20 @@ import { AuthService } from '../auth/auth.service';
   imports: [RouterLink, CommonModule],
   styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements AfterViewInit, OnDestroy {
+export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   isMenuOpen = false;
   activeSectionId: string | null = null;
+  currentUser: User | null = null;
   private observer?: IntersectionObserver;
+  private userSubscription: Subscription = new Subscription();
 
   constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.userSubscription = this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -51,6 +60,7 @@ export class NavbarComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.userSubscription.unsubscribe();
   }
 
   getUnderlineClass(targetId: string): string {
