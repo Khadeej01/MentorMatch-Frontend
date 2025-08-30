@@ -134,59 +134,30 @@
               Meet our experienced mentors.
             </p>
 
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+              <input type="text" [(ngModel)]="searchTerm" (input)="filterMentors()" placeholder="Search mentors by name or bio..." class="flex-grow p-2 rounded-md border border-gray-300">
+              <select [(ngModel)]="selectedSpecialty" (change)="filterMentors()" class="p-2 rounded-md border border-gray-300">
+                <option value="">All Specialties</option>
+                <option *ngFor="let specialty of availableSpecialties" [value]="specialty">{{ specialty }}</option>
+              </select>
+            </div>
 
             <div class="flex overflow-y-auto scrollbar-none">
               <div class="flex items-stretch gap-3 p-4">
-                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
+                <div *ngFor="let mentor of filteredMentors" class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
                   <div class="w-full aspect-square bg-cover bg-center rounded-lg" ></div>
                   <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
                     <div>
-                      <p class="text-[#0d141c] text-base font-medium leading-normal">Sarah Chen</p>
-                      <p class="text-[#49739c] text-sm font-normal leading-normal">Product Manager at TechCorp</p>
+                      <p class="text-[#0d141c] text-base font-medium leading-normal">{{ mentor.name }}</p>
+                      <p class="text-[#49739c] text-sm font-normal leading-normal">{{ mentor.specialty }}</p>
                     </div>
                     <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
                       <span class="truncate">View Profile</span>
                     </button>
                   </div>
                 </div>
-
-                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
-                  <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
-                  <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
-                    <div>
-                      <p class="text-[#0d141c] text-base font-medium leading-normal">David Lee</p>
-                      <p class="text-[#49739c] text-sm font-normal leading-normal">Senior Software Engineer at Innovate Solutions</p>
-                    </div>
-                    <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
-                      <span class="truncate">View Profile</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
-                  <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
-                  <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
-                    <div>
-                      <p class="text-[#0d141c] text-base font-medium leading-normal">Emily Rodriguez</p>
-                      <p class="text-[#49739c] text-sm font-normal leading-normal">UX Designer at Creative Studio</p>
-                    </div>
-                    <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
-                      <span class="truncate">View Profile</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
-                  <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
-                  <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
-                    <div>
-                      <p class="text-[#0d141c] text-base font-medium leading-normal">Michael Brown</p>
-                      <p class="text-[#49739c] text-sm font-normal leading-normal">Data Scientist at Data Insights</p>
-                    </div>
-                    <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
-                      <span class="truncate">View Profile</span>
-                    </button>
-                  </div>
+                <div *ngIf="filteredMentors.length === 0" class="text-white text-center w-full py-4">
+                  No mentors found matching your criteria.
                 </div>
               </div>
             </div>
