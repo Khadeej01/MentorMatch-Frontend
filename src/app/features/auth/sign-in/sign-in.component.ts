@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -17,24 +18,33 @@ export class SignInComponent {
   isSubmitting: boolean = false;
   errorMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
-  async onSubmit() {
+  onSubmit() {
     this.errorMessage = '';
     if (!this.email || !this.password) {
       this.errorMessage = 'Please enter your email and password.';
       return;
     }
     this.isSubmitting = true;
-    try {
-      // Simulated auth request; replace with real API later
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      this.router.navigateByUrl('/');
-    } catch (err) {
-      this.errorMessage = 'Sign in failed. Please try again.';
-    } finally {
-      this.isSubmitting = false;
-    }
+    this.authService.signIn({ email: this.email, password: this.password })
+      .subscribe({
+        next: (response) => {
+          console.log('Signed in successfully', response);
+          if (response.user.role === 'mentor') {
+            this.router.navigate(['/mentor-dashboard']);
+          } else {
+            this.router.navigate(['/learner-dashboard']);
+          }
+        },
+        error: (err) => {
+          this.errorMessage = 'Sign in failed. Please try again.';
+          console.error(err);
+        },
+        complete: () => {
+          this.isSubmitting = false;
+        }
+      });
   }
 
   close() {
