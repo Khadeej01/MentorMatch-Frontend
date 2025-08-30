@@ -1,308 +1,279 @@
-<div class="px-40 flex flex-1 justify-center py-5">
-  <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
-    <div class=" @container">
-      <div class=" @[480px]:p-4">
-        <div class="flex min-h-[480px] flex-col gap-6 @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4">
-          <div class="flex flex-col gap-2 text-center">
-            <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]" >Find the perfect mentor</h1>
-            <h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
-              Connect with experienced professionals for personalized guidance and support in your career journey.</h2>
-          </div>
-          <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
-            <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
-              <div class="text-[#687682] flex border border-[#dde1e4] bg-white items-center justify-center pl-[15px] rounded-l-xl border-r-0" data-icon="MagnifyingGlass"  data-size="20px"  data-weight="regular"  >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                  <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
-                </svg>
+<div class="relative min-h-screen overflow-hidden">
+  <!-- Background layers for crossfade -->
+  <div class="absolute inset-0 full-background transition-opacity duration-1000 ease-in-out" [ngStyle]="heroStyleA" [style.opacity]="heroOpacityA"></div>
+  <div class="absolute inset-0 full-background transition-opacity duration-1000 ease-in-out" [ngStyle]="heroStyleB" [style.opacity]="heroOpacityB"></div>
+
+  <!-- Foreground content -->
+  <div class="relative">
+    <div id="home" class="px-10 py-5">
+      <div class="layout-content-container flex flex-col max-w-[960px] w-full mx-auto">
+        <div class=" @container">
+          <div class=" @[480px]:p-4">
+            <div class="flex min-h-[calc(100vh-80px)] flex-col gap-6 @[480px]:gap-8 @[480px]:rounded-xl items-center justify-start p-4 pt-36">
+              <div class="flex flex-col gap-2 text-center">
+                <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]" >Find the perfect mentor</h1>
+                <h2 class="text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">
+                  Connect with experienced professionals for personalized guidance and support in your career journey.</h2>
               </div>
-              <input placeholder="Search for mentors" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121517] focus:outline-0 focus:ring-0 border border-[#dde1e4] bg-white focus:border-[#dde1e4] h-full placeholder:text-[#687682] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal" value="" [(ngModel)]="searchTerm"  />
-              <div class="flex items-center justify-center rounded-r-xl border-l-0 border border-[#dde1e4] bg-white pr-[7px]">
-                <button  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#d7e6f3] text-[#121517] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"  >
-                  <span class="truncate">Browse Mentors</span>
-                </button>
-              </div>
-            </div>
-          </label>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="relative flex flex-col section-background overflow-x-hidden font-[Manrope,'Noto_Sans',sans-serif]">
-  <div class="flex h-full flex-col">
-    <div class="px-40 flex flex-1 justify-center py-5">
-      <div class="flex flex-col max-w-[960px] flex-1">
-
-        <h2 id="how-it-works" class="text-[#0d141c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
-          How It Works
-        </h2>
-        <p class="text-[#0d141c] text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
-          A simple path to mentorship.
-        </p>
-
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
-
-          <!-- Card 1 -->
-          <div class="flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] bg-slate-50 p-4">
-            <div class="text-[#0d141c]">
-              <!-- User Icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/>
-              </svg>
-            </div>
-            <div class="flex flex-col gap-1">
-              <h3 class="text-[#0d141c] text-base font-bold leading-tight">Create Profile</h3>
-              <p class="text-[#49739c] text-sm font-normal leading-normal">
-                Set up your profile with your skills and interests.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] bg-slate-50 p-4">
-            <div class="text-[#0d141c]">
-              <!-- Magnifying Glass Icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>
-              </svg>
-            </div>
-            <div class="flex flex-col gap-1">
-              <h3 class="text-[#0d141c] text-base font-bold leading-tight">Find a Mentor</h3>
-              <p class="text-[#49739c] text-sm font-normal leading-normal">
-                Browse mentors and find the perfect match for your goals.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] bg-slate-50 p-4">
-            <div class="text-[#0d141c]">
-              <!-- Calendar Icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-96-88v64a8,8,0,0,1-16,0V132.94l-4.42,2.22a8,8,0,0,1-7.16-14.32l16-8A8,8,0,0,1,112,120Zm59.16,30.45L152,176h16a8,8,0,0,1,0,16H136a8,8,0,0,1-6.4-12.8l28.78-38.37A8,8,0,1,0,145.07,132a8,8,0,1,1-13.85-8A24,24,0,0,1,176,136,23.76,23.76,0,0,1,171.16,150.45Z"/>
-              </svg>
-            </div>
-            <div class="flex flex-col gap-1">
-              <h3 class="text-[#0d141c] text-base font-bold leading-tight">Book a Session</h3>
-              <p class="text-[#49739c] text-sm font-normal leading-normal">
-                Schedule a session at a time that works for both of you.
-              </p>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] bg-slate-50 p-4">
-            <div class="text-[#0d141c]">
-              <!-- Map Pin Icon -->
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                <path d="M128,64a40,40,0,1,0,40,40A40,40,0,0,0,128,64Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,128Zm0-112a88.1,88.1,0,0,0-88,88c0,31.4,14.51,64.68,42,96.25a254.19,254.19,0,0,0,41.45,38.3,8,8,0,0,0,9.18,0A254.19,254.19,0,0,0,174,200.25c27.45-31.57,42-64.85,42-96.25A88.1,88.1,0,0,0,128,16Zm0,206c-16.53-13-72-60.75-72-118a72,72,0,0,1,144,0C200,161.23,144.53,209,128,222Z"/>
-              </svg>
-            </div>
-            <div class="flex flex-col gap-1">
-              <h3 class="text-[#0d141c] text-base font-bold leading-tight">Start Learning</h3>
-              <p class="text-[#49739c] text-sm font-normal leading-normal">
-                Begin your mentorship journey and achieve your goals.
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="font-[Manrope,'Noto_Sans',sans-serif]">
-<div class="relative flex flex-col section-background overflow-x-hidden">
-  <div class="flex h-full flex-col">
-    <div class="px-40 flex flex-1 justify-center py-5">
-      <div class="flex flex-col max-w-[960px] flex-1">
-
-        <h2 id="our-mentors" class="text-[#0d141c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
-          Our Mentors
-        </h2>
-        <p class="text-[#0d141c] text-base font-normal leading-normal pb-3 pt-1 px-4">
-          Meet our experienced mentors.
-        </p>
-
-        <div class="flex overflow-y-auto scrollbar-none">
-          <div class="flex items-stretch gap-3 p-4">
-
-            <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
-              <div class="w-full aspect-square bg-cover bg-center rounded-lg" ></div>
-              <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
-                <div>
-                  <p class="text-[#0d141c] text-base font-medium leading-normal">Sarah Chen</p>
-                  <p class="text-[#49739c] text-sm font-normal leading-normal">Product Manager at TechCorp</p>
+              <label class="flex flex-col min-w-40 h-14 w-full max-w-[480px] @[480px]:h-16">
+                <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                  <div class="text-[#687682] flex border border-[#dde1e4] bg-white items-center justify-center pl-[15px] rounded-l-xl border-r-0" data-icon="MagnifyingGlass"  data-size="20px"  data-weight="regular"  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+                    </svg>
+                  </div>
+                  <input placeholder="Search for mentors" class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#121517] focus:outline-0 focus:ring-0 border border-[#dde1e4] bg-white focus:border-[#dde1e4] h-full placeholder:text-[#687682] px-[15px] rounded-r-none border-r-0 pr-2 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal" value="" [(ngModel)]="searchTerm"  />
+                  <div class="flex items-center justify-center rounded-r-xl border-l-0 border border-[#dde1e4] bg-white pr-[7px]">
+                    <button  class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#d7e6f3] text-[#121517] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"  >
+                      <span class="truncate">Browse Mentors</span>
+                    </button>
+                  </div>
                 </div>
-                <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
-                  <span class="truncate">View Profile</span>
-                </button>
-              </div>
+              </label>
             </div>
-
-            <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
-              <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
-              <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
-                <div>
-                  <p class="text-[#0d141c] text-base font-medium leading-normal">David Lee</p>
-                  <p class="text-[#49739c] text-sm font-normal leading-normal">Senior Software Engineer at Innovate Solutions</p>
-                </div>
-                <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
-                  <span class="truncate">View Profile</span>
-                </button>
-              </div>
-            </div>
-
-
-            <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
-              <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
-              <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
-                <div>
-                  <p class="text-[#0d141c] text-base font-medium leading-normal">Emily Rodriguez</p>
-                  <p class="text-[#49739c] text-sm font-normal leading-normal">UX Designer at Creative Studio</p>
-                </div>
-                <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
-                  <span class="truncate">View Profile</span>
-                </button>
-              </div>
-            </div>
-
-
-            <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
-              <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
-              <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
-                <div>
-                  <p class="text-[#0d141c] text-base font-medium leading-normal">Michael Brown</p>
-                  <p class="text-[#49739c] text-sm font-normal leading-normal">Data Scientist at Data Insights</p>
-                </div>
-                <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
-                  <span class="truncate">View Profile</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<div class="font-[Manrope,'Noto_Sans',sans-serif]">
-<div class="relative flex flex-col section-background overflow-x-hidden">
-  <div class="flex h-full flex-col">
-    <div class="px-40 flex flex-1 justify-center py-5">
-      <div class="flex flex-col max-w-[960px] flex-1">
-        <h2 id="resources" class="text-[#0d141c] text-3xl font-extrabold leading-tight tracking-[-0.02em] px-4 pb-2 pt-6">
-          Resources
-        </h2>
-        <p class="text-[#49739c] text-base leading-relaxed pb-4 pt-1 px-4 text-center">
-          Learn faster with curated guides, checklists and best practices.
-        </p>
-
-        <div class="grid grid-cols-1 @[768px]:grid-cols-3 gap-4 p-4 mt-1">
-
-          <a class="group flex flex-col gap-3 rounded-xl border border-[#cedbe8] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.08)]" href="#">
-            <div class="flex items-center gap-3">
-              <div class="grid place-items-center h-10 w-10 rounded-full bg-[var(--primary-50)] text-[var(--primary-700)]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
-              </div>
-              <div class="text-[#0d141c] text-base font-extrabold leading-tight tracking-[-0.01em]">How to find the right mentor</div>
-            </div>
-            <p class="text-[#49739c] text-sm leading-relaxed">A step-by-step guide to identifying your goals and selecting mentors who match them.</p>
-            <span class="mt-1 inline-flex h-9 items-center justify-center rounded-lg btn-secondary px-3 text-xs font-bold tracking-[0.02em] group-hover:translate-x-0.5 transition-transform">Read guide →</span>
-          </a>
-
-          <!-- Article 2 -->
-          <a class="group flex flex-col gap-3 rounded-xl border border-[#cedbe8] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.08)]" href="#">
-            <div class="flex items-center gap-3">
-              <div class="grid place-items-center h-10 w-10 rounded-full bg-[var(--secondary-50)] text-[var(--secondary-600)]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,48H48V48H208ZM88,160H72a8,8,0,0,1,0-16H88a8,8,0,0,1,0,16Zm96,0H120a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Z"/></svg>
-              </div>
-              <div class="text-[#0d141c] text-base font-extrabold leading-tight tracking-[-0.01em]">First session checklist</div>
-            </div>
-            <p class="text-[#49739c] text-sm leading-relaxed">Be prepared for your first call: questions, agenda, and follow-up templates.</p>
-            <span class="mt-1 inline-flex h-9 items-center justify-center rounded-lg btn-secondary px-3 text-xs font-bold tracking-[0.02em] group-hover:translate-x-0.5 transition-transform">Download checklist →</span>
-          </a>
-
-          <!-- Article 3 -->
-          <a class="group flex flex-col gap-3 rounded-xl border border-[#cedbe8] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.08)]" href="#">
-            <div class="flex items-center gap-3">
-              <div class="grid place-items-center h-10 w-10 rounded-full bg-[var(--accent-500)]/10 text-[var(--accent-500)]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm8,160a8,8,0,0,1-16,0V136a8,8,0,0,1,16,0Zm-8-72a12,12,0,1,1,12-12A12,12,0,0,1,128,112Z"/></svg>
-              </div>
-              <div class="text-[#0d141c] text-base font-extrabold leading-tight tracking-[-0.01em]">Make the most of mentorship</div>
-            </div>
-            <p class="text-[#49739c] text-sm leading-relaxed">Habits and frameworks to build momentum and measure progress with your mentor.</p>
-            <span class="mt-1 inline-flex h-9 items-center justify-center rounded-lg btn-secondary px-3 text-xs font-bold tracking-[0.02em] group-hover:translate-x-0.5 transition-transform">Explore tips →</span>
-          </a>
-        </div>
-
-        <div class="flex justify-center pb-6">
-          <button class="flex h-11 items-center justify-center rounded-lg btn-primary px-5 text-sm font-bold tracking-[0.02em]">Browse all resources</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-<div class="font-[Manrope,'Noto_Sans',sans-serif]">
-<div class="relative flex flex-col section-background overflow-x-hidden">
-  <div class="flex h-full flex-col">
-    <div class="px-40 flex flex-1 justify-center py-5">
-      <div class="flex flex-col max-w-[960px] flex-1">
-        <h2 id="pricing" class="text-[#0d141c] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
-          Pricing
-        </h2>
-        <p class="text-[#0d141c] text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
-          Choose a plan that fits your mentorship needs.
-        </p>
-        <div class="grid grid-cols-1 @[768px]:grid-cols-3 gap-3 p-4">
-          <div class="flex flex-1 flex-col gap-4 rounded-lg border border-[#cedbe8] bg-slate-50 p-5">
-            <div class="flex items-baseline justify-between">
-              <h3 class="text-[#0d141c] text-base font-bold leading-tight">Free</h3>
-              <div class="text-[#0d141c] text-2xl font-extrabold">$0<span class="text-sm font-medium text-[#49739c]">/mo</span></div>
-            </div>
-            <p class="text-[#49739c] text-sm leading-normal">Get started and explore mentors.</p>
-            <ul class="text-[#0d141c] text-sm leading-normal space-y-2">
-              <li>• Browse mentor profiles</li>
-              <li>• Save up to 5 mentors</li>
-              <li>• 1 intro message per day</li>
-            </ul>
-            <button class="mt-2 flex h-10 items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">Get Started</button>
-          </div>
-          <div class="flex flex-1 flex-col gap-4 rounded-lg border border-[#cedbe8] bg-white p-5 shadow-[0_0_6px_rgba(0,0,0,0.08)]">
-            <div class="flex items-baseline justify-between">
-              <h3 class="text-[#0d141c] text-base font-bold leading-tight">Pro</h3>
-              <div class="text-[#0d141c] text-2xl font-extrabold">$19<span class="text-sm font-medium text-[#49739c]">/mo</span></div>
-            </div>
-            <p class="text-[#49739c] text-sm leading-normal">For active mentees connecting regularly.</p>
-            <ul class="text-[#0d141c] text-sm leading-normal space-y-2">
-              <li>• Unlimited mentor browsing</li>
-              <li>• 10 messages per day</li>
-              <li>• Priority support</li>
-            </ul>
-            <button class="mt-2 flex h-10 items-center justify-center rounded-lg btn-primary px-4 text-sm font-bold tracking-[0.015em]">Choose Pro</button>
-          </div>
-          <div class="flex flex-1 flex-col gap-4 rounded-lg border border-[#cedbe8] bg-slate-50 p-5">
-            <div class="flex items-baseline justify-between">
-              <h3 class="text-[#0d141c] text-base font-bold leading-tight">Team</h3>
-              <div class="text-[#0d141c] text-2xl font-extrabold">$49<span class="text-sm font-medium text-[#49739c]">/mo</span></div>
-            </div>
-            <p class="text-[#49739c] text-sm leading-normal">For groups and startups growing together.</p>
-            <ul class="text-[#0d141c] text-sm leading-normal space-y-2">
-              <li>• Up to 10 team members</li>
-              <li>• Shared mentor lists</li>
-              <li>• Admin and analytics</li>
-            </ul>
-            <button class="mt-2 flex h-10 items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">Contact Sales</button>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- How It Works Section -->
+    <div class="relative flex flex-col bg-[#F1F5F9] overflow-x-hidden font-[Manrope,'Noto_Sans',sans-serif]">
+      <div class="flex h-full flex-col">
+        <div class="px-10 py-8 mt-8 pb-16">
+          <div class="flex flex-col max-w-[960px] w-full mx-auto">
+            <h2 id="how-it-works"
+                class="text-[#0d141c] text-3xl font-extrabold leading-tight tracking-[-0.02em] px-4 pb-2 pt-6 text-center">
+              How It Works
+            </h2>
+            <p class="text-[#49739c] text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
+              A simple path to mentorship.
+            </p>
+
+
+            <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+              <!-- Card 1 -->
+              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-jay-soundo-2148060180-32444182.jpg')">
+                <div class="absolute inset-0 bg-black/30"></div>
+                <div class="text-white relative z-10">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,0,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/>
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-1 relative z-10 text-white">
+                  <h3 class="text-base font-bold leading-tight">Create Profile</h3>
+                  <p class="text-sm font-normal leading-normal">
+                    Set up your profile with your skills and interests.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-yankrukov-8199135.jpg')">
+                <div class="absolute inset-0 bg-black/30"></div>
+                <div class="text-white relative z-10">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-1 relative z-10 text-white">
+                  <h3 class="text-base font-bold leading-tight">Find a Mentor</h3>
+                  <p class="text-sm font-normal leading-normal">
+                    Browse mentors and find the perfect match for your goals.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-mart-production-8472879.jpg')">
+                <div class="absolute inset-0 bg-black/30"></div>
+                <div class="text-white relative z-10">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-96-88v64a8,8,0,0,1-16,0V132.94l-4.42,2.22a8,8,0,0,1-7.16-14.32l16-8A8,8,0,0,1,112,120Zm59.16,30.45L152,176h16a8,8,0,0,1,0,16H136a8,8,0,0,1-6.4-12.8l28.78-38.37A8,8,0,1,0,145.07,132a8,8,0,1,1-13.85-8A24,24,0,0,1,176,136,23.76,23.76,0,0,1,171.16,150.45Z"/>
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-1 relative z-10 text-white">
+                  <h3 class="text-base font-bold leading-tight">Book a Session</h3>
+                  <p class="text-sm font-normal leading-normal">
+                    Schedule a session at a time that works for both of you.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-tara-winstead-8849288.jpg')">
+                <div class="absolute inset-0 bg-black/30"></div>
+                <div class="text-white relative z-10">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M128,64a40,40,0,1,0,40,40A40,40,0,0,0,128,64Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,128Zm0-112a88.1,88.1,0,0,0-88,88c0,31.4,14.51,64.68,42,96.25a254.19,254.19,0,0,0,41.45,38.3,8,8,0,0,0,9.18,0A254.19,254.19,0,0,0,174,200.25c27.45-31.57,42-64.85,42-96.25A88.1,88.1,0,0,0,128,16Zm0,206c-16.53-13-72-60.75-72-118a72,72,0,0,1,144,0C200,161.23,144.53,209,128,222Z"/>
+                  </svg>
+                </div>
+                <div class="flex flex-col gap-1 relative z-10 text-white">
+                  <h3 class="text-base font-bold leading-tight">Start Learning</h3>
+                  <p class="text-sm font-normal leading-normal">
+                    Begin your mentorship journey and achieve your goals.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Our Mentors Section -->
+    <div class="font-[Manrope,'Noto_Sans',sans-serif] mt-16">
+    <div class="relative flex flex-col bg-black overflow-x-hidden">
+      <div class="flex h-full flex-col">
+        <div class="px-10 py-5">
+          <div class="flex flex-col max-w-[960px] w-full mx-auto">
+            <h2 id="our-mentors"
+                class="text-white text-3xl font-extrabold leading-tight tracking-[-0.02em] px-4 pb-2 pt-6 text-center">
+              Our Mentors
+            </h2>
+            <p class="text-slate-300 text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
+              Meet our experienced mentors.
+            </p>
+
+
+            <div class="flex overflow-y-auto scrollbar-none">
+              <div class="flex items-stretch gap-3 p-4">
+                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
+                  <div class="w-full aspect-square bg-cover bg-center rounded-lg" ></div>
+                  <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
+                    <div>
+                      <p class="text-[#0d141c] text-base font-medium leading-normal">Sarah Chen</p>
+                      <p class="text-[#49739c] text-sm font-normal leading-normal">Product Manager at TechCorp</p>
+                    </div>
+                    <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
+                      <span class="truncate">View Profile</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
+                  <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
+                  <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
+                    <div>
+                      <p class="text-[#0d141c] text-base font-medium leading-normal">David Lee</p>
+                      <p class="text-[#49739c] text-sm font-normal leading-normal">Senior Software Engineer at Innovate Solutions</p>
+                    </div>
+                    <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
+                      <span class="truncate">View Profile</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
+                  <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
+                  <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
+                    <div>
+                      <p class="text-[#0d141c] text-base font-medium leading-normal">Emily Rodriguez</p>
+                      <p class="text-[#49739c] text-sm font-normal leading-normal">UX Designer at Creative Studio</p>
+                    </div>
+                    <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
+                      <span class="truncate">View Profile</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex flex-1 flex-col gap-4 rounded-lg bg-slate-50 shadow-[0_0_4px_rgba(0,0,0,0.1)] min-w-40">
+                  <div class="w-full aspect-square bg-cover bg-center rounded-lg"></div>
+                  <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
+                    <div>
+                      <p class="text-[#0d141c] text-base font-medium leading-normal">Michael Brown</p>
+                      <p class="text-[#49739c] text-sm font-normal leading-normal">Data Scientist at Data Insights</p>
+                    </div>
+                    <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
+                      <span class="truncate">View Profile</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Resources Section -->
+    <div class="font-[Manrope,'Noto_Sans',sans-serif]">
+    <div class="relative flex flex-col section-background overflow-x-hidden">
+      <div class="flex h-full flex-col">
+        <div class="px-10 py-5">
+          <div class="flex flex-col max-w-[960px] w-full mx-auto">
+            <h2 id="resources"
+                class="text-[#0d141c] text-3xl font-extrabold leading-tight tracking-[-0.02em] px-4 pb-2 pt-6 text-center">
+              Resources
+            </h2>
+            <p class="text-[#49739c] text-base leading-relaxed pb-4 pt-1 px-4 text-center">
+              Learn faster with curated guides, checklists and best practices.
+            </p>
+
+            <div class="grid grid-cols-1 @[768px]:grid-cols-3 gap-4 p-4 mt-1">
+              <a class="group flex flex-col gap-3 rounded-xl border border-[#cedbe8] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.08)]" href="#">
+                <div class="flex items-center gap-3">
+                  <div class="grid place-items-center h-10 w-10 rounded-full bg-[var(--primary-50)] text-[var(--primary-700)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+                  </div>
+                  <div class="text-[#0d141c] text-base font-extrabold leading-tight tracking-[-0.01em]">How to find the right mentor</div>
+                </div>
+                <p class="text-[#49739c] text-sm leading-relaxed">A step-by-step guide to identifying your goals and selecting mentors who match them.</p>
+                <span class="mt-1 inline-flex h-9 items-center justify-center rounded-lg btn-secondary px-3 text-xs font-bold tracking-[0.02em] group-hover:translate-x-0.5 transition-transform">Read guide →</span>
+              </a>
+
+              <a class="group flex flex-col gap-3 rounded-xl border border-[#cedbe8] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.08)]" href="#">
+                <div class="flex items-center gap-3">
+                  <div class="grid place-items-center h-10 w-10 rounded-full bg-[var(--secondary-50)] text-[var(--secondary-600)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,48H48V48H208ZM88,160H72a8,8,0,0,1,0-16H88a8,8,0,0,1,0,16Zm96,0H120a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Z"/></svg>
+                  </div>
+                  <div class="text-[#0d141c] text-base font-extrabold leading-tight tracking-[-0.01em]">First session checklist</div>
+                </div>
+                <p class="text-[#49739c] text-sm leading-relaxed">Be prepared for your first call: questions, agenda, and follow-up templates.</p>
+                <span class="mt-1 inline-flex h-9 items-center justify-center rounded-lg btn-secondary px-3 text-xs font-bold tracking-[0.02em] group-hover:translate-x-0.5 transition-transform">Download checklist →</span>
+              </a>
+
+              <a class="group flex flex-col gap-3 rounded-xl border border-[#cedbe8] bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.08)]" href="#">
+                <div class="flex items-center gap-3">
+                  <div class="grid place-items-center h-10 w-10 rounded-full bg-[var(--accent-500)]/10 text-[var(--accent-500)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.12,104.12,0,0,0,128,24Zm8,160a8,8,0,0,1-16,0V136a8,8,0,0,1,16,0Zm-8-72a12,12,0,1,1,12-12A12,12,0,0,1,128,112Z"/></svg>
+                  </div>
+                  <div class="text-[#0d141c] text-base font-extrabold leading-tight tracking-[-0.01em]">Make the most of mentorship</div>
+                </div>
+                <p class="text-[#49739c] text-sm leading-relaxed">Habits and frameworks to build momentum and measure progress with your mentor.</p>
+                <span class="mt-1 inline-flex h-9 items-center justify-center rounded-lg btn-secondary px-3 text-xs font-bold tracking-[0.02em] group-hover:translate-x-0.5 transition-transform">Explore tips →</span>
+              </a>
+            </div>
+
+            <div class="flex justify-center pb-6">
+              <button class="flex h-11 items-center justify-center rounded-lg btn-primary px-5 text-sm font-bold tracking-[0.02em]">Browse all resources</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+        <!-- About Section -->
+    <div id="about" class="bg-black text-white">
+      <div class="px-10 py-10">
+        <div class="max-w-[1100px] w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <!-- Left: Description -->
+          <div>
+            <h1 class="text-3xl font-extrabold tracking-[-0.02em] mb-4">About MentorMatch</h1>
+            <p class="text-slate-300 leading-relaxed">
+              MentorMatch is a platform that connects learners with experienced mentors across
+              technology, design, product, and more. We help you find the right guidance, structure
+              your goals, and build momentum through practical mentorship. Start with browsing mentors,
+              book a session, and grow with support along the way.
+            </p>
+          </div>
+          <!-- Right: Image -->
+          <div>
+            <img src="assets/pexels-fauxels-3184339.jpg" alt="Mentoring" class="w-full h-[360px] object-cover rounded-xl" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-footer></app-footer>
   </div>
-</div>
 </div>

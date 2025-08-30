@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -14,15 +15,16 @@ export class SignUpComponent {
   fullName: string = '';
   email: string = '';
   password: string = '';
+  role: 'mentor' | 'learner' = 'learner';
   acceptTerms: boolean = false;
   isSubmitting: boolean = false;
   errorMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
-  async onSubmit() {
+  onSubmit() {
     this.errorMessage = '';
-    if (!this.fullName || !this.email || !this.password) {
+    if (!this.fullName || !this.email || !this.password || !this.role) {
       this.errorMessage = 'Please fill out all required fields.';
       return;
     }
@@ -31,15 +33,29 @@ export class SignUpComponent {
       return;
     }
     this.isSubmitting = true;
-    try {
-      // Simulate API call; replace with real registration flow
-      await new Promise((resolve) => setTimeout(resolve, 900));
-      this.router.navigateByUrl('/');
-    } catch (err) {
-      this.errorMessage = 'Sign up failed. Please try again.';
-    } finally {
-      this.isSubmitting = false;
-    }
+    this.authService.signUp({ 
+      fullName: this.fullName, 
+      email: this.email, 
+      password: this.password, 
+      role: this.role 
+    })
+      .subscribe({
+        next: (response) => {
+          console.log('Signed up successfully', response);
+          if (response.user.role === 'mentor') {
+            this.router.navigate(['/mentor-dashboard']);
+          } else {
+            this.router.navigate(['/learner-dashboard']);
+          }
+        },
+        error: (err) => {
+          this.errorMessage = 'Sign up failed. Please try again.';
+          console.error(err);
+        },
+        complete: () => {
+          this.isSubmitting = false;
+        }
+      });
   }
 
   close() {
