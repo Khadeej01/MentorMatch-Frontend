@@ -1,0 +1,6 @@
+/* You can add custom styles for FullCalendar here */
+/* For example, to adjust height or font sizes */
+.full-calendar-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
