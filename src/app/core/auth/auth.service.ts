@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 
 export interface User {
@@ -65,6 +65,29 @@ export class AuthService {
     // and check its expiration date (exp claim).
     // For now, we'll just return false, assuming it never expires.
     return false;
+  }
+
+  refreshToken(refreshToken: string): Observable<AuthResponse> {
+    // Simulate API call to refresh token
+    console.log('AuthService.refreshToken called with:', refreshToken);
+    const authData = this.getAuthData();
+    if (!authData) {
+      return throwError(() => new Error('No auth data found for refresh.'));
+    }
+
+    const newAccessToken = 'new-fake-access-token-' + authData.user.role;
+    const newRefreshToken = 'new-fake-refresh-token-' + authData.user.role;
+
+    const response: AuthResponse = {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      user: authData.user
+    };
+
+    return of(response).pipe(
+      delay(500),
+      tap(res => this.setAuthData(res))
+    );
   }
 
   getUserRole(): 'mentor' | 'learner' | 'admin' | null {
