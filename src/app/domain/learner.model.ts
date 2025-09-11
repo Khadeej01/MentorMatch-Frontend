@@ -1,7 +1,12 @@
 export interface Learner {
   id: string;
-  name: string;
+  nom: string;
+  name?: string; // For backward compatibility
   email: string;
-  interests: string; // e.g., "Web Development, AI, Data Science"
-  // Add other relevant learner properties here
+  role: string;
+  objectifs?: string;
+  niveau?: string;
+  interests?: string; // For backward compatibility
+  createdAt?: string;
+  updatedAt?: string;
 }

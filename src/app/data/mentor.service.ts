@@ -1,45 +1,110 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { Mentor } from '../domain/mentor.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { Mentor, MentorCreateRequest, MentorUpdateRequest } from '../domain/mentor.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MentorService {
-  private mentors: Mentor[] = [
-    { id: '1', name: 'Sarah Chen', email: 'sarah.c@example.com', specialty: 'Product Management', bio: 'Experienced product leader.' },
-    { id: '2', name: 'David Lee', email: 'david.l@example.com', specialty: 'Software Engineering', bio: 'Senior software engineer with a passion for open source.' },
-    { id: '3', name: 'Emily Rodriguez', email: 'emily.r@example.com', specialty: 'UX Design', bio: 'Award-winning UX designer.' },
-  ];
+  private apiUrl = 'http://localhost:8080/api';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  getMentors(): Observable<Mentor[]> {
-    return of(this.mentors).pipe(delay(500));
-  }
-
-  getMentorById(id: string): Observable<Mentor | undefined> {
-    return of(this.mentors.find(mentor => mentor.id === id)).pipe(delay(500));
-  }
-
-  createMentor(mentor: Mentor): Observable<Mentor> {
-    mentor.id = String(this.mentors.length + 1); // Simple ID generation
-    this.mentors.push(mentor);
-    return of(mentor).pipe(delay(500));
-  }
-
-  updateMentor(mentor: Mentor): Observable<Mentor> {
-    const index = this.mentors.findIndex(m => m.id === mentor.id);
-    if (index > -1) {
-      this.mentors[index] = mentor;
+  // Récupérer tous les mentors avec filtres optionnels
+  getMentors(filters?: {
+    available?: boolean;
+    competences?: string;
+    search?: string;
+  }): Observable<Mentor[]> {
+    let params = new HttpParams();
+    
+    if (filters) {
+      if (filters.available !== undefined) {
+        params = params.set('available', filters.available.toString());
+      }
+      if (filters.competences) {
+        params = params.set('competences', filters.competences);
+      }
+      if (filters.search) {
+        params = params.set('search', filters.search);
+      }
     }
-    return of(mentor).pipe(delay(500));
+
+    return this.http.get<Mentor[]>(`${this.apiUrl}/mentors`, { params })
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  deleteMentor(id: string): Observable<boolean> {
-    const initialLength = this.mentors.length;
-    this.mentors = this.mentors.filter(mentor => mentor.id !== id);
-    return of(this.mentors.length < initialLength).pipe(delay(500));
+  // Récupérer un mentor par ID
+  getMentorById(id: number): Observable<Mentor> {
+    return this.http.get<Mentor>(`${this.apiUrl}/mentors/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Créer un nouveau mentor
+  createMentor(mentor: MentorCreateRequest): Observable<Mentor> {
+    return this.http.post<Mentor>(`${this.apiUrl}/mentors`, mentor)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Mettre à jour un mentor
+  updateMentor(id: number, mentor: MentorUpdateRequest): Observable<Mentor> {
+    return this.http.put<Mentor>(`${this.apiUrl}/mentors/${id}`, mentor)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Supprimer un mentor
+  deleteMentor(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/mentors/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Rechercher des mentors
+  searchMentors(query: string): Observable<Mentor[]> {
+    return this.http.get<Mentor[]>(`${this.apiUrl}/mentors/search`, {
+      params: { q: query }
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Rechercher par compétences
+  getMentorsByCompetences(competences: string): Observable<Mentor[]> {
+    return this.http.get<Mentor[]>(`${this.apiUrl}/mentors/competences/${competences}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Initialiser des mentors de test
+  initTestMentors(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/test/mentors/init`, {})
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('Erreur dans MentorService:', error);
+    let errorMessage = 'Une erreur est survenue';
+    
+    if (error.error?.message) {
+      errorMessage = error.error.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return throwError(() => new Error(errorMessage));
   }
 }

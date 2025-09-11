@@ -41,12 +41,8 @@ export class LearnerListComponent implements OnInit {
   deleteLearner(id: string): void {
     if (confirm('Are you sure you want to delete this learner?')) {
       this.learnerService.deleteLearner(id).subscribe({
-        next: (success) => {
-          if (success) {
-            this.learners = this.learners.filter(learner => learner.id !== id);
-          } else {
-            this.error = 'Failed to delete learner.';
-          }
+        next: () => {
+          this.learners = this.learners.filter(learner => learner.id !== id);
         },
         error: (err) => {
           this.error = 'Failed to delete learner.';

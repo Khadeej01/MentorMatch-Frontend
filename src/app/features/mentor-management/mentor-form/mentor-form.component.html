@@ -1,38 +1,147 @@
-<div class="container mx-auto p-4">
-  <h1 class="text-2xl font-bold mb-4">{{ isEditMode ? 'Edit Mentor' : 'Add New Mentor' }}</h1>
+<div class="container mx-auto p-6 max-w-4xl">
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">
+      {{ isEditMode ? 'Modifier le Mentor' : 'Ajouter un Nouveau Mentor' }}
+    </h1>
+    <p class="text-gray-600 mt-2">
+      {{ isEditMode ? 'Modifiez les informations du mentor' : 'Remplissez les informations du nouveau mentor' }}
+    </p>
+  </div>
 
-  <div *ngIf="loading" class="text-center text-gray-500">Loading...</div>
-  <div *ngIf="error" class="text-center text-red-500">{{ error }}</div>
+  <!-- Messages d'état -->
+  <div *ngIf="loading" class="text-center py-8">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+    <p class="mt-2 text-gray-500">Chargement...</p>
+  </div>
 
-  <form (ngSubmit)="onSubmit()" *ngIf="!loading">
-    <div class="mb-4">
-      <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-      <input type="text" id="name" name="name" [(ngModel)]="mentor.name" required
-             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+  <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    {{ error }}
+  </div>
+
+  <!-- Formulaire -->
+  <form (ngSubmit)="onSubmit()" *ngIf="!loading" class="bg-white p-6 rounded-lg shadow-md">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Nom -->
+      <div>
+        <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">
+          Nom complet <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="nom" 
+          name="nom" 
+          [(ngModel)]="mentor.nom" 
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+          Email <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          [(ngModel)]="mentor.email" 
+          required
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
     </div>
-    <div class="mb-4">
-      <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-      <input type="email" id="email" name="email" [(ngModel)]="mentor.email" required
-             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
+    <!-- Compétences -->
+    <div class="mt-6">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        Compétences <span class="text-red-500">*</span>
+      </label>
+      
+      <!-- Compétences sélectionnées -->
+      <div *ngIf="getCompetencesList().length > 0" class="mb-3">
+        <div class="flex flex-wrap gap-2">
+          <span 
+            *ngFor="let comp of getCompetencesList()" 
+            class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full flex items-center">
+            {{ comp }}
+            <button 
+              type="button"
+              (click)="removeCompetence(comp)"
+              class="ml-2 text-blue-600 hover:text-blue-800">
+              ×
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Ajouter des compétences -->
+      <div class="flex gap-2 mb-3">
+        <select 
+          #competenceSelect
+          class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Sélectionner une compétence</option>
+          <option 
+            *ngFor="let comp of competences" 
+            [value]="comp"
+            [disabled]="getCompetencesList().includes(comp)">
+            {{ comp }}
+          </option>
+        </select>
+        <button 
+          type="button"
+          (click)="addCompetence(competenceSelect.value); competenceSelect.value = ''"
+          class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-md transition duration-200">
+          Ajouter
+        </button>
     </div>
-    <div class="mb-4">
-      <label for="specialty" class="block text-gray-700 text-sm font-bold mb-2">Specialty:</label>
-      <input type="text" id="specialty" name="specialty" [(ngModel)]="mentor.specialty" required
-             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+
+      <!-- Saisie manuelle -->
+      <input 
+        type="text" 
+        [(ngModel)]="mentor.competences"
+        placeholder="Ou saisissez manuellement (séparées par des virgules)"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
     </div>
-    <div class="mb-4">
-      <label for="bio" class="block text-gray-700 text-sm font-bold mb-2">Bio:</label>
-      <textarea id="bio" name="bio" [(ngModel)]="mentor.bio" rows="4" required
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
+
+    <!-- Expérience -->
+    <div class="mt-6">
+      <label for="experience" class="block text-sm font-medium text-gray-700 mb-2">
+        Expérience <span class="text-red-500">*</span>
+      </label>
+      <textarea 
+        id="experience" 
+        name="experience" 
+        [(ngModel)]="mentor.experience" 
+        rows="4" 
+        required
+        placeholder="Décrivez l'expérience du mentor..."
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
     </div>
-    <div class="flex items-center justify-between">
-      <button type="submit"
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        {{ isEditMode ? 'Update Mentor' : 'Create Mentor' }}
+
+    <!-- Disponibilité -->
+    <div class="mt-6">
+      <label class="flex items-center">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="mentor.available"
+          class="mr-2">
+        <span class="text-sm font-medium text-gray-700">Mentor disponible</span>
+      </label>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
+      <button 
+        type="button" 
+        (click)="router.navigate(['/mentors'])"
+        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+        Annuler
       </button>
-      <button type="button" (click)="router.navigate(['/mentors'])"
-              class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        Cancel
+      <button 
+        type="submit"
+        [disabled]="loading"
+        class="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+        {{ loading ? 'Enregistrement...' : (isEditMode ? 'Mettre à jour' : 'Créer le mentor') }}
       </button>
     </div>
   </form>

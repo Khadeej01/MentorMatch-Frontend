@@ -1,4 +1,157 @@
-<div>
-  <h1>Learner Dashboard</h1>
-  <p>Welcome, Learner!</p>
+<div class="container mx-auto p-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-4">
+      <div class="h-12 w-12 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-lg font-bold">
+        {{ (currentUser?.fullName || currentUser?.email || 'U') | slice:0:1 | uppercase }}
+      </div>
+      <div>
+        <div class="text-2xl font-extrabold text-[#0d141c]">Hi, {{ currentUser?.fullName || currentUser?.email }}</div>
+        <div class="mt-1">
+          <span class="inline-flex items-center rounded-full bg-[#eef3f8] px-2.5 py-0.5 text-xs font-semibold text-[#0d141c]">Learner</span>
+        </div>
+      </div>
+    </div>
+    <div class="hidden md:flex gap-2">
+      <a routerLink="/mentors" class="rounded-full bg-[#0d141c] text-white text-sm px-4 py-2 font-semibold">Find a mentor</a>
+      <a routerLink="/learner-dashboard" class="rounded-full bg-[#f1f2f4] text-[#0d141c] text-sm px-4 py-2 font-semibold">Edit profile</a>
+    </div>
+  </div>
+
+  <!-- Profile + Onboarding + Stats -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+    <div class="col-span-2 rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
+      <div class="text-sm text-[#6b7280]">Your profile</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+        <div>
+          <label class="text-sm text-[#6b7280]">Level</label>
+          <input class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" [(ngModel)]="level" (blur)="saveLearnerProfile()" placeholder="e.g. Beginner" />
+        </div>
+        <div>
+          <label class="text-sm text-[#6b7280]">Objectives</label>
+          <input class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" [(ngModel)]="objectives" (blur)="saveLearnerProfile()" placeholder="e.g. Learn Angular" />
+        </div>
+      </div>
+      <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="rounded-xl border border-[#eef1f4] p-4">
+          <div class="text-xs text-[#6b7280]">Upcoming</div>
+          <div class="text-xl font-bold mt-1">{{ bookings.length || 0 }}</div>
+        </div>
+        <div class="rounded-xl border border-[#eef1f4] p-4">
+          <div class="text-xs text-[#6b7280]">Goals set</div>
+          <div class="text-xl font-bold mt-1">{{ objectives ? 1 : 0 }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
+      <div class="font-semibold mb-2">Getting started</div>
+      <ul class="list-disc pl-5 text-sm text-[#0d141c]">
+        <li class="mb-1">Set your goals (objectives)</li>
+        <li class="mb-1">Complete your profile (add level)</li>
+        <li>Find a mentor below and book a session</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Search mentors -->
+  <div class="mb-8">
+    <div class="flex items-center gap-3 mb-3">
+      <input [(ngModel)]="searchTerm" (keyup.enter)="searchMentors()" class="flex-1 rounded-lg border border-[#dde1e4] px-3 py-2 text-sm" placeholder="Search mentors by name or skill..." />
+      <button class="rounded-lg bg-[#0d141c] text-white text-sm px-4 py-2 font-semibold" (click)="searchMentors()">Search</button>
+    </div>
+    <div *ngIf="searchResults.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let m of searchResults" class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="h-10 w-10 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-sm font-bold">
+            {{ (m.nom || 'M') | slice:0:1 | uppercase }}
+          </div>
+          <div class="flex-1">
+            <div class="font-semibold text-[#0d141c]">{{ m.nom }}</div>
+            <div class="text-xs text-[#6b7280] mt-0.5">{{ m.available ? 'Available' : 'Unavailable' }}</div>
+          </div>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <span *ngFor="let tag of (m.competences || '').split(',')" class="inline-flex items-center rounded-full bg-[#eef3f8] px-2 py-0.5 text-xs font-medium text-[#0d141c]">{{ tag.trim() }}</span>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <button class="rounded-lg bg-[#0d141c] text-white text-sm px-3 py-2 font-semibold" (click)="openBooking(m)">Book</button>
+          <button class="rounded-lg bg-gray-100 text-[#0d141c] text-sm px-3 py-2 font-semibold" (click)="goToMentor(m)">Profile</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Suggested mentors -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold text-[#0d141c]">Explore mentors</h2>
+      <a routerLink="/mentors" class="text-sm text-[#0d141c] font-semibold">View all</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let m of suggestedMentors" class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <div class="h-10 w-10 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-sm font-bold">
+            {{ (m.nom || 'M') | slice:0:1 | uppercase }}
+          </div>
+          <div class="flex-1">
+            <div class="font-semibold text-[#0d141c]">{{ m.nom }}</div>
+            <div class="text-xs text-[#6b7280] mt-0.5">{{ m.available ? 'Available' : 'Unavailable' }}</div>
+          </div>
+        </div>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <span *ngFor="let tag of (m.competences || '').split(',')" class="inline-flex items-center rounded-full bg-[#eef3f8] px-2 py-0.5 text-xs font-medium text-[#0d141c]">{{ tag.trim() }}</span>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <button class="rounded-lg bg-[#0d141c] text-white text-sm px-3 py-2 font-semibold" (click)="openBooking(m)">Book</button>
+          <button class="rounded-lg bg-gray-100 text-[#0d141c] text-sm px-3 py-2 font-semibold" (click)="goToMentor(m)">Profile</button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="suggestedMentors.length === 0" class="text-center text-sm text-[#6b7280] mt-2">No mentors to suggest yet.</div>
+  </div>
+
+  <!-- Bookings overview -->
+  <div>
+    <h2 class="text-xl font-bold text-[#0d141c] mb-3">Your sessions</h2>
+    <div *ngIf="loading" class="text-[#6b7280]">Loading bookings...</div>
+    <div *ngIf="error" class="text-red-600">{{ error }}</div>
+    <div *ngIf="!loading && bookings.length === 0" class="rounded-xl border border-dashed border-[#e5e7eb] bg-white p-6 text-center text-sm text-[#6b7280]">You don’t have any sessions yet. Find a mentor above to get started.</div>
+    <div *ngIf="!loading && bookings.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let b of bookings" class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-[#6b7280]">#{{ b.id }}</div>
+          <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': b.status === 'confirmed',
+                  'bg-yellow-100 text-yellow-800': b.status === 'pending',
+                  'bg-gray-100 text-gray-800': b.status !== 'confirmed' && b.status !== 'pending'
+                }">{{ b.status }}</span>
+        </div>
+        <div class="mt-2 text-sm">Mentor: <span class="font-medium">{{ b.mentorName || b.mentorId }}</span></div>
+        <div class="mt-1 text-sm">Date: {{ b.dateTime | date:'short' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking modal -->
+  <div *ngIf="bookingModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+    <div class="w-full max-w-[420px] rounded-2xl bg-white p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-[#0d141c] text-xl font-extrabold">New session</h2>
+        <button class="text-[#49739c] text-sm" (click)="closeBooking()">Close</button>
+      </div>
+      <div class="mt-4 text-sm">Mentor: <span class="font-semibold">{{ bookingSelectedMentor?.nom }}</span></div>
+      <div class="mt-3 grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-sm text-[#6b7280]">Date</label>
+          <input type="date" [(ngModel)]="bookingDate" class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="text-sm text-[#6b7280]">Time</label>
+          <input type="time" [(ngModel)]="bookingTime" class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm" />
+        </div>
+      </div>
+      <button class="mt-4 w-full rounded-lg bg-[#0d141c] text-white text-sm px-4 py-2 font-semibold" (click)="confirmBooking()" [disabled]="!bookingDate || !bookingTime">Confirm</button>
+    </div>
+  </div>
 </div>

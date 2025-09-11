@@ -38,7 +38,8 @@ export class SignInComponent {
           }
         },
         error: (err) => {
-          this.errorMessage = 'Sign in failed. Please try again.';
+          const serverMsg = err?.error?.error || err?.error?.message || err?.message;
+          this.errorMessage = serverMsg ? `Sign in failed: ${serverMsg}` : 'Sign in failed. Please try again.';
           console.error(err);
         },
         complete: () => {

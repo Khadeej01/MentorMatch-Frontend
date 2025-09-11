@@ -13,7 +13,7 @@ import { Learner } from '../../../domain/learner.model';
   styleUrls: ['./learner-form.component.css']
 })
 export class LearnerFormComponent implements OnInit {
-  learner: Learner = { id: '', name: '', email: '', interests: '' };
+  learner: Learner = { id: '', nom: '', email: '', role: 'APPRENANT', objectifs: '', niveau: '' };
   isEditMode: boolean = false;
   loading: boolean = false;
   error: string | null = null;
@@ -51,7 +51,7 @@ export class LearnerFormComponent implements OnInit {
     this.loading = true;
     this.error = null;
     if (this.isEditMode) {
-      this.learnerService.updateLearner(this.learner).subscribe({
+      this.learnerService.updateLearner(this.learner.id, this.learner).subscribe({
         next: () => {
           this.router.navigate(['/learners']);
         },

@@ -1,35 +1,66 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Booking } from '../domain/booking.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookingService {
-  private bookings: Booking[] = [
-    { id: 'b1', mentorId: '1', learnerId: '1', date: '2025-09-10', time: '10:00 AM', status: 'confirmed' },
-    { id: 'b2', mentorId: '1', learnerId: '2', date: '2025-09-12', time: '02:00 PM', status: 'pending' },
-    { id: 'b3', mentorId: '2', learnerId: '1', date: '2025-09-15', time: '11:00 AM', status: 'completed' },
-  ];
+  private apiUrl = 'http://localhost:8080/api/bookings';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   getBookingsForMentor(mentorId: string): Observable<Booking[]> {
-    return of(this.bookings.filter(b => b.mentorId === mentorId)).pipe(delay(500));
+    return this.http.get<Booking[]>(`${this.apiUrl}/mentor/${mentorId}`)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  createBooking(booking: Booking): Observable<Booking> {
-    booking.id = 'b' + (this.bookings.length + 1);
-    this.bookings.push(booking);
-    return of(booking).pipe(delay(500));
+  getBookingsForLearner(learnerId: string): Observable<Booking[]> {
+    return this.http.get<Booking[]>(`${this.apiUrl}/apprenant/${learnerId}`)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  updateBookingStatus(id: string, status: 'pending' | 'confirmed' | 'cancelled' | 'completed'): Observable<Booking | undefined> {
-    const booking = this.bookings.find(b => b.id === id);
-    if (booking) {
-      booking.status = status;
+  getAllBookings(): Observable<Booking[]> {
+    return this.http.get<Booking[]>(this.apiUrl)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Backend expects BookingDTO: { mentorId: number, apprenantId: number, dateTime: string, notes?: string }
+  createBooking(dto: { mentorId: number | string, apprenantId: number | string, dateTime: string, notes?: string }): Observable<Booking> {
+    return this.http.post<Booking>(this.apiUrl, dto)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Backend endpoint expects status as request param: PUT /{id}/status?status=CONFIRMED
+  updateBookingStatus(id: string, status: 'pending' | 'confirmed' | 'cancelled' | 'completed'): Observable<Booking> {
+    // Map to backend's uppercase values if needed
+    const mapped = status.toUpperCase();
+    return this.http.put<Booking>(`${this.apiUrl}/${id}/status`, {}, { params: { status: mapped } })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('Erreur dans BookingService:', error);
+    let errorMessage = 'Une erreur est survenue';
+    
+    if (error.error?.message) {
+      errorMessage = error.error.message;
+    } else if (error.message) {
+      errorMessage = error.message;
     }
-    return of(booking).pipe(delay(500));
+    
+    return throwError(() => new Error(errorMessage));
   }
 }

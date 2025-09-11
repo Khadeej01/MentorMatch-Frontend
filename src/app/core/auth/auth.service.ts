@@ -23,7 +23,7 @@ const AUTH_DATA_KEY = 'auth-data';
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:3000/api/auth'; // Placeholder for your backend API URL
+  private apiUrl = 'http://localhost:8080/api/auth';
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser$: Observable<User | null>;
 
@@ -33,8 +33,37 @@ export class AuthService {
   }
 
   signIn(credentials: {email: string, password: string}): Observable<AuthResponse> {
-    // Simulate HTTP POST request to /login
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
+    // Backend returns { token, user: { id, nom, email, role } }
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+      // Map backend payload to our AuthResponse shape
+      // Role mapping: APPRENANT->learner, MENTOR->mentor, ADMIN->admin
+      // Name mapping: nom -> fullName
+      // Token mapping: token -> accessToken
+      tap((raw) => {
+        const backendUser = raw?.user || {};
+        const mappedRole = (backendUser.role || '').toString().toLowerCase() === 'apprenant'
+          ? 'learner'
+          : (backendUser.role || '').toString().toLowerCase();
+
+        const response: AuthResponse = {
+          accessToken: raw?.token || '',
+          refreshToken: '',
+          user: {
+            id: String(backendUser.id ?? ''),
+            email: backendUser.email ?? '',
+            fullName: backendUser.nom ?? '',
+            role: (['mentor','learner','admin'].includes(mappedRole) ? mappedRole : 'learner') as User['role']
+          }
+        };
+
+        this.setAuthData(response);
+        this.currentUserSubject.next(response.user);
+      })
+    ) as unknown as Observable<AuthResponse>;
+  }
+
+    signUp(userData: { nom: string; email: string; password: string; role: 'mentor' | 'learner'; competences?: string; experience?: string; }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
       tap(res => {
         this.setAuthData(res);
         this.currentUserSubject.next(res.user);
@@ -42,14 +71,13 @@ export class AuthService {
     );
   }
 
-  signUp(userData: {fullName: string, email: string, password: string, role: 'mentor' | 'learner'}): Observable<AuthResponse> {
-    // Simulate HTTP POST request to /register
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
-      tap(res => {
-        this.setAuthData(res);
-        this.currentUserSubject.next(res.user);
-      })
-    );
+  // Raw sign up to allow role-specific extra fields
+  signUpRaw(payload: Record<string, unknown>): Observable<{message: string}> {
+    // Ensure role normalization if present
+    if (typeof payload['role'] === 'string') {
+      payload['role'] = (payload['role'] as string).toLowerCase();
+    }
+    return this.http.post<{message: string}>(`${this.apiUrl}/register`, payload);
   }
 
   private setAuthData(data: AuthResponse): void {

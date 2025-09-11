@@ -37,81 +37,34 @@
     </div>
 
     <!-- How It Works Section -->
-    <div class="relative flex flex-col bg-[#F1F5F9] overflow-x-hidden font-[Manrope,'Noto_Sans',sans-serif]">
+    <div class="relative flex flex-col bg-white overflow-x-hidden font-[Manrope,'Noto_Sans',sans-serif]">
       <div class="flex h-full flex-col">
-        <div class="px-10 py-8 mt-8 pb-16">
-          <div class="flex flex-col max-w-[960px] w-full mx-auto">
-            <h2 id="how-it-works"
-                class="text-[#0d141c] text-3xl font-extrabold leading-tight tracking-[-0.02em] px-4 pb-2 pt-6 text-center">
-              How It Works
-            </h2>
+        <div class="px-10 py-12 mt-8 pb-24">
+          <div class="flex flex-col max-w-[1200px] w-full mx-auto">
+            <div class="flex items-center justify-center">
+              <h2 id="how-it-works"
+                  class="text-[#0d141c] text-3xl font-extrabold leading-tight tracking-[-0.02em] px-4 pb-2 pt-6 text-center">
+                How It Works
+              </h2>
+            </div>
             <p class="text-[#49739c] text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
               A simple path to mentorship.
             </p>
 
 
-            <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
-              <!-- Card 1 -->
-              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-jay-soundo-2148060180-32444182.jpg')">
+            <div class="how-it-works-grid">
+              <div *ngFor="let card of howItWorksCards; let i = index"
+                   [id]="'work-card-' + i"
+                   class="how-it-works-grid-card relative flex flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-6 bg-cover bg-center"
+                   [style.background-image]="'url(' + card.image + ')'"
+                   [class.active-card]="i === activeWorkCardIndex">
                 <div class="absolute inset-0 bg-black/30"></div>
                 <div class="text-white relative z-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,0,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/>
-                  </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256" [innerHTML]="card.icon | safeHtml"></svg>
                 </div>
                 <div class="flex flex-col gap-1 relative z-10 text-white">
-                  <h3 class="text-base font-bold leading-tight">Create Profile</h3>
-                  <p class="text-sm font-normal leading-normal">
-                    Set up your profile with your skills and interests.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Card 2 -->
-              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-yankrukov-8199135.jpg')">
-                <div class="absolute inset-0 bg-black/30"></div>
-                <div class="text-white relative z-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/>
-                  </svg>
-                </div>
-                <div class="flex flex-col gap-1 relative z-10 text-white">
-                  <h3 class="text-base font-bold leading-tight">Find a Mentor</h3>
-                  <p class="text-sm font-normal leading-normal">
-                    Browse mentors and find the perfect match for your goals.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Card 3 -->
-              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-mart-production-8472879.jpg')">
-                <div class="absolute inset-0 bg-black/30"></div>
-                <div class="text-white relative z-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-96-88v64a8,8,0,0,1-16,0V132.94l-4.42,2.22a8,8,0,0,1-7.16-14.32l16-8A8,8,0,0,1,112,120Zm59.16,30.45L152,176h16a8,8,0,0,1,0,16H136a8,8,0,0,1-6.4-12.8l28.78-38.37A8,8,0,1,0,145.07,132a8,8,0,1,1-13.85-8A24,24,0,0,1,176,136,23.76,23.76,0,0,1,171.16,150.45Z"/>
-                  </svg>
-                </div>
-                <div class="flex flex-col gap-1 relative z-10 text-white">
-                  <h3 class="text-base font-bold leading-tight">Book a Session</h3>
-                  <p class="text-sm font-normal leading-normal">
-                    Schedule a session at a time that works for both of you.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Card 4 -->
-              <div class="relative flex flex-1 flex-col gap-3 rounded-lg border border-[#cedbe8] overflow-hidden p-4 min-h-[180px] bg-cover bg-center" style="background-image:url('assets/pexels-tara-winstead-8849288.jpg')">
-                <div class="absolute inset-0 bg-black/30"></div>
-                <div class="text-white relative z-10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-                    <path d="M128,64a40,40,0,1,0,40,40A40,40,0,0,0,128,64Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,128Zm0-112a88.1,88.1,0,0,0-88,88c0,31.4,14.51,64.68,42,96.25a254.19,254.19,0,0,0,41.45,38.3,8,8,0,0,0,9.18,0A254.19,254.19,0,0,0,174,200.25c27.45-31.57,42-64.85,42-96.25A88.1,88.1,0,0,0,128,16Zm0,206c-16.53-13-72-60.75-72-118a72,72,0,0,1,144,0C200,161.23,144.53,209,128,222Z"/>
-                  </svg>
-                </div>
-                <div class="flex flex-col gap-1 relative z-10 text-white">
-                  <h3 class="text-base font-bold leading-tight">Start Learning</h3>
-                  <p class="text-sm font-normal leading-normal">
-                    Begin your mentorship journey and achieve your goals.
-                  </p>
+                  <h3 class="text-xl md:text-2xl font-bold leading-tight">{{ card.title }}</h3>
+                  <p class="text-sm md:text-base leading-normal">{{ card.description }}</p>
                 </div>
               </div>
             </div>
@@ -148,8 +101,8 @@
                   <div class="w-full aspect-square bg-cover bg-center rounded-lg" ></div>
                   <div class="flex flex-col flex-1 justify-between p-4 pt-0 gap-4">
                     <div>
-                      <p class="text-[#0d141c] text-base font-medium leading-normal">{{ mentor.name }}</p>
-                      <p class="text-[#49739c] text-sm font-normal leading-normal">{{ mentor.specialty }}</p>
+                                            <p class="text-[#0d141c] text-base font-medium leading-normal">{{ mentor.nom }}</p>
+                      <p class="text-[#49739c] text-sm font-normal leading-normal">{{ mentor.competences }}</p>
                     </div>
                     <button class="flex h-10 min-w-[84px] max-w-[480px] items-center justify-center rounded-lg btn-secondary px-4 text-sm font-bold tracking-[0.015em]">
                       <span class="truncate">View Profile</span>
