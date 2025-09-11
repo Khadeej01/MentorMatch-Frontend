@@ -1,45 +1,62 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Learner } from '../domain/learner.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LearnerService {
-  private learners: Learner[] = [
-    { id: '1', name: 'Alice Johnson', email: 'alice.j@example.com', interests: 'Web Development' },
-    { id: '2', name: 'Bob Williams', email: 'bob.w@example.com', interests: 'Data Science' },
-    { id: '3', name: 'Charlie Brown', email: 'charlie.b@example.com', interests: 'Mobile App Development' },
-  ];
+  private apiUrl = 'http://localhost:8080/api/apprenants';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   getLearners(): Observable<Learner[]> {
-    return of(this.learners).pipe(delay(500));
+    return this.http.get<Learner[]>(this.apiUrl)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  getLearnerById(id: string): Observable<Learner | undefined> {
-    return of(this.learners.find(learner => learner.id === id)).pipe(delay(500));
+  getLearnerById(id: string): Observable<Learner> {
+    return this.http.get<Learner>(`${this.apiUrl}/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  createLearner(learner: Learner): Observable<Learner> {
-    learner.id = String(this.learners.length + 1); // Simple ID generation
-    this.learners.push(learner);
-    return of(learner).pipe(delay(500));
+  createLearner(learner: Partial<Learner>): Observable<Learner> {
+    return this.http.post<Learner>(this.apiUrl, learner)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
-  updateLearner(learner: Learner): Observable<Learner> {
-    const index = this.learners.findIndex(l => l.id === learner.id);
-    if (index > -1) {
-      this.learners[index] = learner;
+  updateLearner(id: string, learner: Partial<Learner>): Observable<Learner> {
+    return this.http.put<Learner>(`${this.apiUrl}/${id}`, learner)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  deleteLearner(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  private handleError(error: any): Observable<never> {
+    console.error('Erreur dans LearnerService:', error);
+    let errorMessage = 'Une erreur est survenue';
+    
+    if (error.error?.message) {
+      errorMessage = error.error.message;
+    } else if (error.message) {
+      errorMessage = error.message;
     }
-    return of(learner).pipe(delay(500));
-  }
-
-  deleteLearner(id: string): Observable<boolean> {
-    const initialLength = this.learners.length;
-    this.learners = this.learners.filter(learner => learner.id !== id);
-    return of(this.learners.length < initialLength).pipe(delay(500));
+    
+    return throwError(() => new Error(errorMessage));
   }
 }

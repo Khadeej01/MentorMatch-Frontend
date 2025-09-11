@@ -1,5 +1,143 @@
-<div>
-  <h1>Mentor Dashboard</h1>
-  <p>Welcome, Mentor!</p>
-  <app-calendar [events]="calendarEvents" (dateClick)="handleDateClick($event)" (eventClick)="handleEventClick($event)"></app-calendar>
+<div class="container mx-auto p-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-4">
+      <div class="h-12 w-12 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-lg font-bold">
+        {{ (currentUser?.fullName || currentUser?.email || 'U') | slice:0:1 | uppercase }}
+      </div>
+      <div>
+        <div class="text-2xl font-extrabold text-[#0d141c]">Hi, {{ currentUser?.fullName || currentUser?.email }}</div>
+        <div class="mt-1">
+          <span class="inline-flex items-center rounded-full bg-[#eef3f8] px-2.5 py-0.5 text-xs font-semibold text-[#0d141c]">Mentor</span>
+        </div>
+      </div>
+    </div>
+    <div class="hidden md:flex gap-2">
+      <a routerLink="/mentor-edit" class="rounded-full bg-gradient-to-r from-[#8DBCC7] to-[#7c3aed] text-white text-sm px-4 py-2 font-semibold shadow-sm hover:shadow">Edit profile</a>
+    </div>
+  </div>
+
+  <!-- Colorful banner -->
+  <div class="mb-6 rounded-xl bg-gradient-to-r from-[#8DBCC7] via-[#7c3aed] to-[#f59e0b] p-[1px]">
+    <div class="rounded-xl bg-white/70 backdrop-blur px-4 py-3 flex items-center justify-between">
+      <div class="text-sm font-semibold text-[#0d141c]">Welcome back 👋</div>
+      <span class="text-xs text-[#0d141c]/70">Keep empowering learners today</span>
+    </div>
+  </div>
+
+  <!-- Centered profile summary -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
+    <div class="lg:col-start-2 lg:col-span-1 rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div class="text-sm font-semibold text-[#7c3aed]">Profile</div>
+      <div class="text-xl font-semibold text-[#0d141c]">{{ currentUser?.fullName || currentUser?.email }}</div>
+      <div class="mt-2 text-sm">Role: <span class="inline-flex items-center gap-1 font-medium text-[#0d141c]"><span class="h-2 w-2 rounded-full bg-[#8DBCC7]"></span>{{ currentUser?.role }}</span></div>
+      <div class="mt-4 space-y-3">
+        <div>
+          <label class="text-sm text-[#6b7280]">Competences</label>
+          <input class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:ring-2 focus:ring-[#8DBCC7] focus:border-[#8DBCC7] outline-none" [(ngModel)]="competences" (blur)="saveMentorProfile()" placeholder="e.g. Angular, Spring Boot" />
+        </div>
+        <div>
+          <label class="text-sm text-[#6b7280]">Experience</label>
+          <input class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:ring-2 focus:ring-[#7c3aed] focus:border-[#7c3aed] outline-none" [(ngModel)]="experience" (blur)="saveMentorProfile()" placeholder="e.g. 5 years" />
+        </div>
+        <label class="mt-1 inline-flex items-center gap-2 text-sm text-[#0d141c]"><input type="checkbox" [(ngModel)]="available" (change)="saveMentorProfile()" class="accent-[#f59e0b]"/> Available for mentoring</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incoming requests -->
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold mb-3 flex items-center gap-2 text-[#0d141c]"><span class="inline-block h-5 w-1.5 rounded-full bg-[#7c3aed]"></span> Incoming requests</h2>
+    <div *ngIf="pendingRequests.length === 0" class="rounded-xl border border-dashed border-[#e5e7eb] bg-white p-6 text-center text-sm text-[#6b7280]">No pending requests.</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let r of pendingRequests" class="rounded-2xl bg-gradient-to-tr from-white to-[#f8fafc] p-[1px] shadow-sm hover:shadow-md transition-shadow">
+        <div class="rounded-2xl border border-[#eef1f4] bg-white p-5">
+          <div class="text-sm text-gray-500">#{{ r.id }}</div>
+          <div class="mt-1">Learner: <span class="font-medium">{{ r.apprenantName || r.apprenantId }}</span></div>
+          <div class="mt-1">Requested: <span class="text-[#7c3aed] font-medium">{{ r.dateTime | date:'short' }}</span></div>
+          <div class="flex gap-2 mt-3">
+            <button class="rounded-md bg-green-600 text-white text-sm px-3 py-2 hover:bg-green-700">Accept</button>
+            <button class="rounded-md bg-red-600 text-white text-sm px-3 py-2 hover:bg-red-700">Decline</button>
+            <button class="rounded-md bg-[#0d141c] text-white text-sm px-3 py-2 hover:bg-black/90">Propose time</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upcoming sessions -->
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold mb-3 flex items-center gap-2 text-[#0d141c]"><span class="inline-block h-5 w-1.5 rounded-full bg-[#0ea5e9]"></span> Upcoming sessions</h2>
+    <div *ngIf="upcomingSessions.length === 0" class="rounded-xl border border-dashed border-[#e5e7eb] bg-white p-6 text-center text-sm text-[#6b7280]">No upcoming sessions.</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let u of upcomingSessions" class="rounded-2xl bg-gradient-to-tr from-white to-[#f8fafc] p-[1px] shadow-sm hover:shadow-md transition-shadow">
+        <div class="rounded-2xl border border-[#eef1f4] bg-white p-5">
+          <div class="text-sm text-gray-500">#{{ u.id }}</div>
+          <div class="mt-1">Learner: <span class="font-medium">{{ u.apprenantName || u.apprenantId }}</span></div>
+          <div class="mt-1">When: <span class="text-[#0ea5e9] font-medium">{{ u.dateTime | date:'short' }}</span></div>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <button (click)="joinSession(u)" class="rounded-md bg-blue-600 text-white text-sm px-3 py-2 font-semibold hover:bg-blue-700">Join Session</button>
+            <button (click)="startVideoCall(u)" class="rounded-md bg-purple-600 text-white text-sm px-3 py-2 font-semibold hover:bg-purple-700">Video Call</button>
+            <button (click)="openChat(u)" class="rounded-md bg-gray-600 text-white text-sm px-3 py-2 font-semibold hover:bg-gray-700">Chat</button>
+            <button class="rounded-md bg-[#0d141c] text-white text-sm px-3 py-2 hover:bg-black/90">Details</button>
+            <button class="rounded-md bg-gray-200 text-[#0d141c] text-sm px-3 py-2 hover:bg-gray-300">Reschedule</button>
+            <button class="rounded-md bg-green-600 text-white text-sm px-3 py-2 hover:bg-green-700">Mark done</button>
+            <button class="rounded-md bg-red-600 text-white text-sm px-3 py-2 hover:bg-red-700">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Completed sessions -->
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold mb-3 flex items-center gap-2 text-[#0d141c]"><span class="inline-block h-5 w-1.5 rounded-full bg-[#22c55e]"></span> Completed sessions</h2>
+    <div *ngIf="completedSessions.length === 0" class="rounded-xl border border-dashed border-[#e5e7eb] bg-white p-6 text-center text-sm text-[#6b7280]">No completed sessions yet.</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let c of completedSessions" class="rounded-2xl bg-gradient-to-tr from-white to-[#f8fafc] p-[1px] shadow-sm hover:shadow-md transition-shadow">
+        <div class="rounded-2xl border border-[#eef1f4] bg-white p-5">
+          <div class="text-sm text-gray-500">#{{ c.id }}</div>
+          <div class="mt-1">Learner: <span class="font-medium">{{ c.apprenantName || c.apprenantId }}</span></div>
+          <div class="mt-1">Completed: <span class="text-[#22c55e] font-medium">{{ c.dateTime | date:'short' }}</span></div>
+          <div class="mt-2">
+            <span class="inline-flex items-center rounded-full bg-green-100 text-green-800 px-2 py-0.5 text-xs font-semibold">Completed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly availability -->
+  <div class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
+    <h2 class="text-xl font-semibold mb-3 flex items-center gap-2 text-[#0d141c]"><span class="inline-block h-5 w-1.5 rounded-full bg-[#f59e0b]"></span> Weekly availability</h2>
+    <div class="text-sm text-gray-600 mb-4">Set your available time slots for mentoring</div>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div *ngFor="let day of ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']" class="border border-[#eef1f4] rounded-lg p-3 hover:shadow-sm transition-shadow" [class.opacity-50]="!weeklyAvailability[day].enabled">
+        <div class="font-semibold text-sm mb-2 text-center flex items-center justify-between">
+          {{ day }}
+          <input type="checkbox" 
+                 [checked]="weeklyAvailability[day].enabled" 
+                 (change)="toggleDayAvailability(day)"
+                 class="w-4 h-4 text-[#f59e0b] rounded">
+        </div>
+        <div class="space-y-2" [class.pointer-events-none]="!weeklyAvailability[day].enabled">
+          <div>
+            <label class="text-xs text-gray-600 block mb-1">Start</label>
+            <input type="time" 
+                   [value]="weeklyAvailability[day].start"
+                   (change)="onTimeChange(day, 'start', $event)"
+                   class="w-full border border-[#dde1e4] rounded px-2 py-1 text-xs focus:ring-2 focus:ring-[#f59e0b] outline-none" />
+          </div>
+          <div>
+            <label class="text-xs text-gray-600 block mb-1">End</label>
+            <input type="time" 
+                   [value]="weeklyAvailability[day].end"
+                   (change)="onTimeChange(day, 'end', $event)"
+                   class="w-full border border-[#dde1e4] rounded px-2 py-1 text-xs focus:ring-2 focus:ring-[#f59e0b] outline-none" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <button (click)="saveAvailability()" class="mt-4 rounded-lg bg-gradient-to-r from-[#8DBCC7] to-[#7c3aed] text-white text-sm px-4 py-2 font-semibold shadow-sm hover:shadow">Save availability</button>
+  </div>
 </div>

@@ -14,7 +14,8 @@
       <a class="text-[#121517] text-sm font-medium leading-normal border-b-2" [ngClass]="getUnderlineClass('our-mentors')" href="#our-mentors">Mentors</a>
       <a class="text-[#121517] text-sm font-medium leading-normal border-b-2" [ngClass]="getUnderlineClass('resources')" href="#resources">Resources</a>
       <a class="text-[#121517] text-sm font-medium leading-normal" routerLink="/about">About</a>
-      <a *ngIf="isLoggedIn()" [routerLink]="getUserRole() === 'mentor' ? '/mentor-dashboard' : '/learner-dashboard'" class="text-[#121517] text-sm font-medium leading-normal">Dashboard</a>
+      <a *ngIf="isLoggedIn()" [routerLink]="getUserRole() === 'mentor' ? '/mentor-dashboard' : getUserRole() === 'admin' ? '/admin-dashboard' : '/learner-dashboard'" class="text-[#121517] text-sm font-medium leading-normal">Dashboard</a>
+      <a *ngIf="isAdmin()" routerLink="/admin-dashboard" class="text-[#121517] text-sm font-medium leading-normal">Admin</a>
     </nav>
     <div class="flex items-center justify-end gap-2">
       <ng-container *ngIf="!isLoggedIn()">

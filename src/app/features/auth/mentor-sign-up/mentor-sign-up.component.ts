@@ -5,19 +5,19 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
-  selector: 'app-sign-up',
+  selector: 'app-mentor-sign-up',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.css']
+  templateUrl: './mentor-sign-up.component.html',
+  styleUrls: ['./mentor-sign-up.component.css']
 })
-export class SignUpComponent {
+export class MentorSignUpComponent {
   fullName: string = '';
   email: string = '';
   password: string = '';
-  role: 'mentor' | 'learner' = 'learner';
   competences: string = '';
   experience: string = '';
+  available: boolean = true;
   acceptTerms: boolean = false;
   isSubmitting: boolean = false;
   errorMessage: string = '';
@@ -26,7 +26,7 @@ export class SignUpComponent {
 
   onSubmit() {
     this.errorMessage = '';
-    if (!this.fullName || !this.email || !this.password || !this.role) {
+    if (!this.fullName || !this.email || !this.password) {
       this.errorMessage = 'Please fill out all required fields.';
       return;
     }
@@ -35,37 +35,28 @@ export class SignUpComponent {
       return;
     }
     this.isSubmitting = true;
-
     const payload: any = {
       nom: this.fullName,
       email: this.email,
       password: this.password,
-      role: this.role
+      role: 'mentor',
+      competences: this.competences || undefined,
+      experience: this.experience || undefined,
+      available: String(this.available)
     };
-
-    if (this.role === 'mentor') {
-      payload.competences = this.competences;
-      payload.experience = this.experience;
-    }
-
-    this.authService.signUp(payload)
-    .subscribe({
-      next: () => {
-        // Redirect to sign-in so user can log in and get a token
-        this.router.navigate(['/sign-in']);
-      },
-      error: (err) => {
-        const serverMsg = err?.error?.error || err?.error?.message || err?.message;
-        this.errorMessage = serverMsg ? `Sign up failed: ${serverMsg}` : 'Sign up failed. Please try again.';
-        console.error(err);
-      },
-      complete: () => {
-        this.isSubmitting = false;
-      }
-    });
+    this.authService.signUpRaw(payload)
+      .subscribe({
+        next: () => this.router.navigate(['/sign-in']),
+        error: (err) => {
+          const serverMsg = err?.error?.error || err?.error?.message || err?.message;
+          this.errorMessage = serverMsg ? `Sign up failed: ${serverMsg}` : 'Sign up failed. Please try again.';
+          console.error(err);
+        },
+        complete: () => this.isSubmitting = false
+      });
   }
 
-  close() {
-    this.router.navigateByUrl('/');
-  }
+  close() { this.router.navigateByUrl('/'); }
 }
+
+

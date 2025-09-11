@@ -20,9 +20,9 @@
       </thead>
       <tbody>
         <tr *ngFor="let learner of learners">
-          <td class="py-2 px-4 border-b">{{ learner.name }}</td>
+          <td class="py-2 px-4 border-b">{{ learner.nom }}</td>
           <td class="py-2 px-4 border-b">{{ learner.email }}</td>
-          <td class="py-2 px-4 border-b">{{ learner.interests }}</td>
+          <td class="py-2 px-4 border-b">{{ learner.objectifs }}</td>
           <td class="py-2 px-4 border-b">
             <a [routerLink]="['/learners', learner.id, 'edit']" class="text-blue-500 hover:underline mr-2">Edit</a>
             <button (click)="deleteLearner(learner.id)" class="text-red-500 hover:underline">Delete</button>

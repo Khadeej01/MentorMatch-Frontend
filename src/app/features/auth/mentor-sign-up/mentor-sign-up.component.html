@@ -1,8 +1,8 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
   <div class="w-full max-w-[460px] rounded-2xl bg-white p-6 shadow-xl">
     <div class="flex items-center justify-between">
-      <h2 class="text-[#0d141c] text-xl font-extrabold">Create your account</h2>
-      <button class="text-[#49739c] text-sm" (click)="close()">Close</button>
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Create mentor account</h2>
+      <a routerLink="/" class="text-[#49739c] text-sm">Close</a>
     </div>
     <form class="mt-5 space-y-4" (ngSubmit)="onSubmit()">
       <div class="flex flex-col gap-1">
@@ -18,30 +18,14 @@
         <input class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" type="password" [(ngModel)]="password" name="password" placeholder="••••••••" required />
       </div>
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-[#0d141c]">I am a...</label>
-        <div class="flex gap-4">
-          <label class="flex items-center gap-2">
-            <input type="radio" name="role" value="learner" [(ngModel)]="role" required>
-            Learner
-          </label>
-          <label class="flex items-center gap-2">
-            <input type="radio" name="role" value="mentor" [(ngModel)]="role" required>
-            Mentor
-          </label>
-        </div>
+        <label class="text-sm font-medium text-[#0d141c]">Competences</label>
+        <input class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" type="text" [(ngModel)]="competences" name="competences" placeholder="e.g. Angular, Spring Boot" />
       </div>
-
-      <!-- Fields for Mentor role -->
-      <div *ngIf="role === 'mentor'" class="space-y-4">
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-[#0d141c]">Skills</label>
-          <input class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" type="text" [(ngModel)]="competences" name="competences" placeholder="e.g., Angular, Java, Project Management" />
-        </div>
-        <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-[#0d141c]">Experience</label>
-          <textarea class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" [(ngModel)]="experience" name="experience" placeholder="Describe your professional experience..."></textarea>
-        </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-[#0d141c]">Experience</label>
+        <input class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" type="text" [(ngModel)]="experience" name="experience" placeholder="e.g. 5 years" />
       </div>
+      <label class="flex items-center gap-2 text-sm text-[#0d141c]"><input type="checkbox" [(ngModel)]="available" name="available" /> Available for mentoring</label>
       <label class="flex items-center gap-2 text-sm text-[#0d141c]"><input type="checkbox" [(ngModel)]="acceptTerms" name="acceptTerms" /> I agree to the Terms and Privacy</label>
       <button [disabled]="isSubmitting" class="w-full rounded-lg bg-[#0d141c] py-2 text-sm font-bold text-white disabled:opacity-60" type="submit">
         {{ isSubmitting ? 'Creating account…' : 'Sign up' }}
@@ -50,6 +34,6 @@
       <p class="text-center text-sm text-[#49739c]">Already have an account? <a routerLink="/sign-in" class="font-bold text-[#0d141c]">Sign in</a></p>
     </form>
   </div>
- </div>
+</div>
 
 

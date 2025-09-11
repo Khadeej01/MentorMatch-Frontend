@@ -1,9 +1,16 @@
 export interface Booking {
   id: string;
   mentorId: string;
-  learnerId: string;
-  date: string; // ISO date string
-  time: string; // e.g., "10:00 AM"
+  apprenantId: string; // Changed from learnerId to match backend
+  dateTime: string; // ISO datetime string - changed from separate date/time
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-  // Add other relevant booking properties here
+  notes?: string;
+  mentorName?: string;
+  apprenantName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  // Legacy fields for backward compatibility
+  date?: string;
+  time?: string;
+  learnerId?: string;
 }

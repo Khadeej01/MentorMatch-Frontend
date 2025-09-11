@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { SignInComponent } from './features/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './features/auth/sign-up/sign-up.component';
+import { RoleSelectComponent } from './features/auth/role-select/role-select.component';
+import { MentorSignUpComponent } from './features/auth/mentor-sign-up/mentor-sign-up.component';
+import { LearnerSignUpComponent } from './features/auth/learner-sign-up/learner-sign-up.component';
 import { ApprenticesComponent } from './features/apprentices/apprentices.component';
 
 import { authGuard } from './core/auth/auth.guard';
@@ -18,12 +21,20 @@ import { MentorDetailComponent } from './features/mentor-detail/mentor-detail.co
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'sign-in', component: SignInComponent },
-  { path: 'sign-up', component: SignUpComponent },
+  { path: 'sign-up', component: RoleSelectComponent },
+  { path: 'sign-up/mentor', component: MentorSignUpComponent },
+  { path: 'sign-up/learner', component: LearnerSignUpComponent },
   { path: 'apprentices', component: ApprenticesComponent, canActivate: [authGuard] },
   
   {
     path: 'mentor-dashboard',
     component: MentorDashboardComponent,
+    canActivate: [roleGuard],
+    data: { expectedRole: 'mentor' }
+  },
+  {
+    path: 'mentor-edit',
+    loadComponent: () => import('./features/mentor-edit/mentor-edit.component').then(m => m.MentorEditComponent),
     canActivate: [roleGuard],
     data: { expectedRole: 'mentor' }
   },
