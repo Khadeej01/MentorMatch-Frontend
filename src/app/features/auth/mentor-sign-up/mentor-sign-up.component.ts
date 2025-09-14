@@ -48,8 +48,8 @@ export class MentorSignUpComponent {
       .subscribe({
         next: (authResponse) => {
           console.log('Mentor registration successful:', authResponse);
-          // User is now automatically logged in, redirect to mentor dashboard
-          this.router.navigate(['/mentor-dashboard']);
+          // Redirect to sign-in page after successful registration
+          this.router.navigate(['/sign-in']);
         },
         error: (err) => {
           console.error('Mentor registration error details:', err);
