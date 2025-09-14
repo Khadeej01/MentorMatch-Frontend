@@ -5,6 +5,7 @@ export interface Mentor {
   competences: string;
   experience: string;
   available: boolean;
+  active: boolean;
   role: string;
   status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
   createdAt?: string;
@@ -18,6 +19,7 @@ export interface MentorCreateRequest {
   competences: string;
   experience: string;
   available: boolean;
+  active: boolean;
   role: string;
 }
 

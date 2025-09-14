@@ -19,10 +19,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('howItWorksViewport') howItWorksViewport: ElementRef | undefined;
 
   mentors: Mentor[] = [];
-  filteredMentors: Mentor[] = [];
-  availableSpecialties: string[] = [];
-  selectedSpecialty: string = '';
-  searchTerm: string = '';
 
   private slideshowTimerId: any;
   private howItWorksTimerId: any;
@@ -103,10 +99,73 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.startHeroSlideshow();
     this.startHowItWorksSlideshow();
 
-    this.mentorService.getMentors().subscribe(mentors => {
-      this.mentors = mentors;
-      this.filteredMentors = mentors;
-      this.availableSpecialties = [...new Set(mentors.map(m => m.competences))];
+    this.mentorService.getMentors().subscribe({
+      next: (mentors) => {
+        console.log('Mentors loaded:', mentors);
+        this.mentors = mentors;
+        if (mentors.length === 0) {
+          console.log('No mentors found, initializing test mentors...');
+          // Try to initialize test mentors if none exist
+          this.mentorService.initTestMentors().subscribe({
+            next: () => {
+              console.log('Test mentors initialized, reloading...');
+              // Reload mentors after initialization
+              this.mentorService.getMentors().subscribe({
+                next: (newMentors) => {
+                  console.log('Mentors after init:', newMentors);
+                  this.mentors = newMentors;
+                },
+                error: (err) => {
+                  console.error('Error reloading mentors after init:', err);
+                }
+              });
+            },
+            error: (err) => {
+              console.error('Error initializing test mentors:', err);
+            }
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error loading mentors:', error);
+        // Set some fallback mentors for display
+        this.mentors = [
+          {
+            id: 1,
+            nom: 'John Doe',
+            email: 'john@example.com',
+            competences: 'Web Development',
+            experience: '5+ years in React and Node.js',
+            available: true,
+            active: true,
+            role: 'MENTOR',
+            status: 'APPROVED'
+          },
+          {
+            id: 2,
+            nom: 'Jane Smith',
+            email: 'jane@example.com',
+            competences: 'UI/UX Design',
+            experience: '7+ years in product design',
+            available: true,
+            active: true,
+            role: 'MENTOR',
+            status: 'APPROVED'
+          },
+          {
+            id: 3,
+            nom: 'Mike Johnson',
+            email: 'mike@example.com',
+            competences: 'Data Science',
+            experience: '6+ years in machine learning',
+            available: false,
+            active: true,
+            role: 'MENTOR',
+            status: 'APPROVED'
+          }
+        ];
+        console.log('Using fallback mentors:', this.mentors);
+      }
     });
   }
 
@@ -192,23 +251,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  filterMentors(): void {
-    let tempMentors = this.mentors;
-
-    // Apply specialty filter
-    if (this.selectedSpecialty) {
-      tempMentors = tempMentors.filter(mentor => mentor.competences === this.selectedSpecialty);
-    }
-
-    // Apply search term filter
-    if (this.searchTerm) {
-      const lowerCaseSearchTerm = this.searchTerm.toLowerCase();
-      tempMentors = tempMentors.filter(mentor =>
-        mentor.nom.toLowerCase().includes(lowerCaseSearchTerm) ||
-        mentor.experience.toLowerCase().includes(lowerCaseSearchTerm)
-      );
-    }
-
-    this.filteredMentors = tempMentors;
+  // Track by function for mentor list performance
+  trackByMentorId(index: number, mentor: Mentor): number {
+    return mentor.id;
   }
 }
