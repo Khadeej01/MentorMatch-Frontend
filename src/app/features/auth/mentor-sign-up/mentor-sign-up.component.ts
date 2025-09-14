@@ -46,11 +46,36 @@ export class MentorSignUpComponent {
     };
     this.authService.signUpRaw(payload)
       .subscribe({
-        next: () => this.router.navigate(['/sign-in']),
+        next: (authResponse) => {
+          console.log('Mentor registration successful:', authResponse);
+          // User is now automatically logged in, redirect to mentor dashboard
+          this.router.navigate(['/mentor-dashboard']);
+        },
         error: (err) => {
-          const serverMsg = err?.error?.error || err?.error?.message || err?.message;
+          console.error('Mentor registration error details:', err);
+          
+          // Enhanced error message extraction
+          let serverMsg = '';
+          if (err?.error?.error) {
+            serverMsg = err.error.error;
+          } else if (err?.error?.message) {
+            serverMsg = err.error.message;
+          } else if (err?.message) {
+            serverMsg = err.message;
+          } else if (err?.status) {
+            serverMsg = `Server error (${err.status}): ${err.statusText || 'Unknown error'}`;
+          }
+          
           this.errorMessage = serverMsg ? `Sign up failed: ${serverMsg}` : 'Sign up failed. Please try again.';
-          console.error(err);
+          
+          // Additional debugging information
+          console.error('Full error object:', {
+            status: err?.status,
+            statusText: err?.statusText,
+            error: err?.error,
+            message: err?.message,
+            url: err?.url
+          });
         },
         complete: () => this.isSubmitting = false
       });

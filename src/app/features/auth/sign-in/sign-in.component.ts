@@ -33,6 +33,8 @@ export class SignInComponent {
           console.log('Signed in successfully', response);
           if (response.user.role === 'mentor') {
             this.router.navigate(['/mentor-dashboard']);
+          } else if (response.user.role === 'admin') {
+            this.router.navigate(['/admin-dashboard']);
           } else {
             this.router.navigate(['/learner-dashboard']);
           }

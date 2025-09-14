@@ -13,7 +13,7 @@ import { Learner } from '../../../domain/learner.model';
   styleUrls: ['./learner-form.component.css']
 })
 export class LearnerFormComponent implements OnInit {
-  learner: Learner = { id: '', nom: '', email: '', role: 'APPRENANT', objectifs: '', niveau: '' };
+  learner: Learner = { id: '', nom: '', email: '', role: 'APPRENANT', objectifs: '', niveau: '', active: true };
   isEditMode: boolean = false;
   loading: boolean = false;
   error: string | null = null;

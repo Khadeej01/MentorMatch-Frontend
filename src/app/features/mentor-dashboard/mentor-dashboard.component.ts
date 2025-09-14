@@ -54,9 +54,9 @@ export class MentorDashboardComponent implements OnInit {
 
   loadBookings(mentorId: string): void {
     this.bookingService.getBookingsForMentor(mentorId).subscribe((bookings: Booking[]) => {
-      this.pendingRequests = bookings.filter(b => b.status === 'pending');
-      this.upcomingSessions = bookings.filter(b => b.status === 'confirmed');
-      this.completedSessions = bookings.filter(b => b.status === 'completed');
+      this.pendingRequests = bookings.filter(b => b.status === 'PENDING');
+      this.upcomingSessions = bookings.filter(b => b.status === 'CONFIRMED');
+      this.completedSessions = bookings.filter(b => b.status === 'COMPLETED');
       // Preload learner names for display where possible
       const uniqueLearnerIds = Array.from(new Set(bookings.map(b => String(b.apprenantId))));
       uniqueLearnerIds.forEach(id => {
@@ -93,13 +93,13 @@ export class MentorDashboardComponent implements OnInit {
   }
 
   acceptRequest(b: Booking): void {
-    this.bookingService.updateBookingStatus(b.id, 'confirmed').subscribe({
+    this.bookingService.updateBookingStatus(b.id, 'CONFIRMED').subscribe({
       next: () => this.loadBookings(this.currentUser!.id),
       error: (e) => console.error(e)
     });
   }
   declineRequest(b: Booking): void {
-    this.bookingService.updateBookingStatus(b.id, 'cancelled').subscribe({
+    this.bookingService.updateBookingStatus(b.id, 'CANCELLED').subscribe({
       next: () => this.loadBookings(this.currentUser!.id),
       error: (e) => console.error(e)
     });
@@ -110,14 +110,14 @@ export class MentorDashboardComponent implements OnInit {
 
   // Mark a confirmed session as completed ("passer la séance")
   completeSession(b: Booking): void {
-    this.bookingService.updateBookingStatus(b.id, 'completed').subscribe({
+    this.bookingService.updateBookingStatus(b.id, 'COMPLETED').subscribe({
       next: () => this.loadBookings(this.currentUser!.id),
       error: (e) => console.error(e)
     });
   }
 
   cancelSession(b: Booking): void {
-    this.bookingService.updateBookingStatus(b.id, 'cancelled').subscribe({
+    this.bookingService.updateBookingStatus(b.id, 'CANCELLED').subscribe({
       next: () => this.loadBookings(this.currentUser!.id),
       error: (e) => console.error(e)
     });

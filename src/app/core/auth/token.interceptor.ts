@@ -20,8 +20,10 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Do NOT attach Authorization for auth endpoints
-    const isAuthEndpoint = request.url.includes('/api/auth/');
+    // Do NOT attach Authorization for auth endpoints or admin login
+    const isAuthEndpoint = request.url.includes('/api/auth/') || 
+                          request.url.includes('/api/admin/login') ||
+                          request.url.includes('/api/admin/init');
 
     const accessToken = this.authService.getAccessToken();
     if (accessToken && !isAuthEndpoint) {

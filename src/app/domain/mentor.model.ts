@@ -6,6 +6,10 @@ export interface Mentor {
   experience: string;
   available: boolean;
   role: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
+  createdAt?: string;
+  updatedAt?: string;
+  suspensionReason?: string;
 }
 
 export interface MentorCreateRequest {
@@ -19,4 +23,6 @@ export interface MentorCreateRequest {
 
 export interface MentorUpdateRequest extends MentorCreateRequest {
   id: number;
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
+  suspensionReason?: string;
 }

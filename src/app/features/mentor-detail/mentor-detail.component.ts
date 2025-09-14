@@ -48,6 +48,14 @@ export class MentorDetailComponent implements OnInit {
     }
   }
 
+  goBack(): void {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      this.router.navigate(['/learner-dashboard']);
+    }
+  }
+
   bookSession(): void {
     this.bookingSuccess = false;
     this.bookingError = null;

@@ -20,7 +20,8 @@ export class MentorFormComponent implements OnInit {
     competences: '', 
     experience: '', 
     available: true, 
-    role: 'MENTOR' 
+    role: 'MENTOR', 
+    status: 'PENDING'
   };
   
   isEditMode: boolean = false;

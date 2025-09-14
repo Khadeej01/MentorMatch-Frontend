@@ -2,8 +2,51 @@
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-[#0d141c]">Admin Dashboard</h1>
-      <p class="text-gray-600 mt-2">Manage all users, mentors, learners, and bookings</p>
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-[#0d141c]">Admin Dashboard</h1>
+          <p class="text-gray-600 mt-2">Manage all users, mentors, learners, and bookings</p>
+        </div>
+        <div class="flex space-x-2">
+
+
+          <button (click)="mentors = []; learners = []; allBookings = []; loadAllData()"
+                  class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm">
+            Force Refresh
+          </button>
+
+
+        </div>
+      </div>
+
+      <!-- Error Display -->
+      <div *ngIf="error" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div class="flex items-center">
+          <svg class="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+          </svg>
+          <h3 class="text-sm font-medium text-red-800">Error</h3>
+          <button (click)="error = null" class="ml-auto text-red-400 hover:text-red-600">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+        <p class="mt-2 text-sm text-red-700">{{ error }}</p>
+      </div>
+
+      <!-- Debug Information -->
+      <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <h3 class="text-sm font-semibold text-yellow-800 mb-2">Debug Status:</h3>
+        <div class="text-xs text-yellow-700 grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div>Mentors: {{ mentors?.length || 0 }}</div>
+          <div>Learners: {{ learners?.length || 0 }}</div>
+          <div>Bookings: {{ allBookings?.length || 0 }}</div>
+          <div>Loading: {{ loading ? 'Yes' : 'No' }}</div>
+          <div class="col-span-2">Error: {{ error || 'None' }}</div>
+          <div class="col-span-2">User Role: {{ currentUser?.role || 'Unknown' }}</div>
+        </div>
+      </div>
     </div>
 
     <!-- Stats Overview -->
@@ -69,22 +112,37 @@
     <div class="bg-white rounded-2xl shadow-sm border border-[#eef1f4] mb-6">
       <div class="border-b border-gray-200">
         <nav class="-mb-px flex space-x-8 px-6">
-          <button (click)="setActiveTab('mentors')" 
+          <button (click)="setActiveTab('mentors')"
                   [class]="activeTab === 'mentors' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                   class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
             Mentors ({{ totalMentors }})
           </button>
-          <button (click)="setActiveTab('learners')" 
+          <button (click)="setActiveTab('learners')"
                   [class]="activeTab === 'learners' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                   class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
             Learners ({{ totalLearners }})
           </button>
-          <button (click)="setActiveTab('bookings')" 
+          <button (click)="setActiveTab('bookings')"
                   [class]="activeTab === 'bookings' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                   class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
             Bookings ({{ totalBookings }})
           </button>
-          <button (click)="setActiveTab('stats')" 
+          <button (click)="setActiveTab('evaluations')"
+                  [class]="activeTab === 'evaluations' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                  class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+            Evaluations ({{ totalEvaluations }})
+          </button>
+          <button (click)="setActiveTab('sessions')"
+                  [class]="activeTab === 'sessions' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                  class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+            Sessions ({{ totalSessions }})
+          </button>
+          <button (click)="setActiveTab('calendar')"
+                  [class]="activeTab === 'calendar' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                  class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+            Calendar
+          </button>
+          <button (click)="setActiveTab('stats')"
                   [class]="activeTab === 'stats' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
                   class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
             Statistics
@@ -96,20 +154,62 @@
       <div class="p-6 border-b border-gray-200">
         <div class="flex flex-col sm:flex-row gap-4">
           <div class="flex-1">
-            <input type="text" 
+            <input type="text"
                    [(ngModel)]="searchTerm"
-                   placeholder="Search users or bookings..." 
+                   placeholder="Search users or bookings..."
+                   class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          <div *ngIf="activeTab === 'mentors'" class="sm:w-48">
+            <select [(ngModel)]="mentorStatusFilter"
+                    class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="all">All Status</option>
+              <option value="PENDING">Pending</option>
+              <option value="APPROVED">Approved</option>
+              <option value="REJECTED">Rejected</option>
+            </select>
+          </div>
+          <div *ngIf="activeTab === 'bookings'" class="sm:w-48">
+            <select [(ngModel)]="statusFilter"
+                    class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="all">All Status</option>
+              <option value="PENDING">Pending</option>
+              <option value="CONFIRMED">Confirmed</option>
+              <option value="CANCELLED">Cancelled</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+          </div>
+          <div *ngIf="activeTab === 'bookings'" class="sm:w-48">
+            <select [(ngModel)]="mentorFilter"
+                    class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="all">All Mentors</option>
+              <option *ngFor="let mentor of mentors" [value]="mentor.id">{{ mentor.nom }}</option>
+            </select>
+          </div>
+          <div *ngIf="activeTab === 'bookings'" class="sm:w-48">
+            <select [(ngModel)]="learnerFilter"
+                    class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="all">All Learners</option>
+              <option *ngFor="let learner of learners" [value]="learner.id">{{ learner.nom }}</option>
+            </select>
+          </div>
+          <div *ngIf="activeTab === 'bookings'" class="sm:w-48">
+            <select [(ngModel)]="competenceFilter"
+                    class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="all">All Competences</option>
+              <option *ngFor="let competence of competences" [value]="competence">{{ competence }}</option>
+            </select>
+          </div>
+          <div *ngIf="activeTab === 'bookings'" class="sm:w-48">
+            <input type="date"
+                   [(ngModel)]="bookingDateStart"
+                   placeholder="Start Date"
                    class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
           </div>
           <div *ngIf="activeTab === 'bookings'" class="sm:w-48">
-            <select [(ngModel)]="statusFilter" 
-                    class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="cancelled">Cancelled</option>
-              <option value="completed">Completed</option>
-            </select>
+            <input type="date"
+                   [(ngModel)]="bookingDateEnd"
+                   placeholder="End Date"
+                   class="w-full rounded-lg border border-[#dde1e4] px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
           </div>
         </div>
       </div>
@@ -121,7 +221,7 @@
           <div *ngIf="loading" class="text-center py-8">Loading mentors...</div>
           <div *ngIf="error" class="text-red-600 text-center py-8">{{ error }}</div>
           <div *ngIf="!loading && getFilteredMentors().length === 0" class="text-center py-8 text-gray-500">No mentors found.</div>
-          
+
           <div *ngIf="!loading && getFilteredMentors().length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div *ngFor="let mentor of getFilteredMentors()" class="border border-[#eef1f4] rounded-xl p-4 hover:shadow-md transition-shadow">
               <div class="flex items-start justify-between">
@@ -132,34 +232,62 @@
                   <div>
                     <h3 class="font-semibold text-[#0d141c]">{{ mentor.nom }}</h3>
                     <p class="text-sm text-gray-600">{{ mentor.email }}</p>
+                    <p *ngIf="mentor.createdAt" class="text-xs text-gray-400">Registered: {{ mentor.createdAt | date:'short' }}</p>
                   </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <span [class]="mentor.available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" 
+                  <span [ngClass]="getStatusBadgeClass(mentor.status)"
                         class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
-                    {{ mentor.available ? 'Available' : 'Unavailable' }}
+                    {{ mentor.status | titlecase }}
                   </span>
                 </div>
               </div>
-              
+
               <div class="mt-3">
-                <p class="text-sm text-gray-600 mb-2">{{ mentor.competences }}</p>
-                <p class="text-xs text-gray-500">{{ mentor.experience }}</p>
+                <p class="text-sm text-gray-600 mb-2"><strong>Skills:</strong> {{ mentor.competences }}</p>
+                <p class="text-xs text-gray-500"><strong>Experience:</strong> {{ mentor.experience }}</p>
               </div>
-              
-              <div class="mt-4 flex space-x-2">
-                <button (click)="viewUserDetails(mentor.id, 'mentor')" 
-                        class="flex-1 bg-blue-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-700">
-                  View Profile
-                </button>
-                <button (click)="toggleMentorAvailability(mentor)" 
-                        class="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
-                  Toggle
-                </button>
-                <button (click)="deleteUser(mentor.id, 'mentor')" 
-                        class="px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
-                  Delete
-                </button>
+
+              <div class="mt-4 space-y-2">
+                <!-- Status Actions -->
+                <div *ngIf="mentor.status === 'PENDING'" class="flex space-x-2">
+                  <button (click)="updateMentorStatus(mentor, 'APPROVED')"
+                          class="flex-1 bg-green-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-green-700">
+                    Approve
+                  </button>
+                  <button (click)="updateMentorStatus(mentor, 'REJECTED')"
+                          class="flex-1 bg-red-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-red-700">
+                    Reject
+                  </button>
+                </div>
+
+                <!-- Management Actions -->
+                <div class="flex space-x-2">
+                  <button (click)="viewMentorDetails(mentor)"
+                          class="bg-blue-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-700">
+                    Details
+                  </button>
+                  <button (click)="viewMentorEvaluations(mentor)"
+                          class="bg-purple-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-purple-700">
+                    Reviews
+                  </button>
+                  <button (click)="viewMentorSessions(mentor)"
+                          class="bg-indigo-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-indigo-700">
+                    Sessions
+                  </button>
+                </div>
+
+                <!-- Additional Actions -->
+                <div class="flex space-x-2">
+                  <button (click)="editMentor(mentor)"
+                          class="bg-gray-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-gray-700">
+                    Edit
+                  </button>
+                  <button (click)="deleteUser(mentor.id, 'mentor')"
+                          class="px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -170,7 +298,7 @@
           <div *ngIf="loading" class="text-center py-8">Loading learners...</div>
           <div *ngIf="error" class="text-red-600 text-center py-8">{{ error }}</div>
           <div *ngIf="!loading && getFilteredLearners().length === 0" class="text-center py-8 text-gray-500">No learners found.</div>
-          
+
           <div *ngIf="!loading && getFilteredLearners().length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div *ngFor="let learner of getFilteredLearners()" class="border border-[#eef1f4] rounded-xl p-4 hover:shadow-md transition-shadow">
               <div class="flex items-start justify-between">
@@ -181,24 +309,57 @@
                   <div>
                     <h3 class="font-semibold text-[#0d141c]">{{ learner.nom }}</h3>
                     <p class="text-sm text-gray-600">{{ learner.email }}</p>
+                    <p *ngIf="learner.createdAt" class="text-xs text-gray-400">Registered: {{ learner.createdAt | date:'short' }}</p>
+                  </div>
+                </div>
+                <span [class]="learner.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
+                  {{ learner.active ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+
+              <div class="mt-3">
+                <div class="grid grid-cols-1 gap-2 text-sm">
+                  <div>
+                    <span class="font-medium text-gray-700">Education Level:</span>
+                    <span class="text-gray-600 ml-1">{{ learner.niveau || 'Not specified' }}</span>
+                  </div>
+                  <div>
+                    <span class="font-medium text-gray-700">Learning Objectives:</span>
+                    <p class="text-gray-600 text-xs mt-1">{{ learner.objectifs || 'No objectives specified' }}</p>
                   </div>
                 </div>
               </div>
-              
-              <div class="mt-3">
-                <p class="text-sm text-gray-600 mb-1">Level: {{ learner.niveau }}</p>
-                <p class="text-xs text-gray-500">{{ learner.objectifs }}</p>
-              </div>
-              
-              <div class="mt-4 flex space-x-2">
-                <button (click)="viewUserDetails(learner.id, 'learner')" 
-                        class="flex-1 bg-green-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-green-700">
-                  View Profile
-                </button>
-                <button (click)="deleteUser(learner.id, 'learner')" 
-                        class="px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
-                  Delete
-                </button>
+
+              <div class="mt-4 space-y-2">
+                <!-- Account Management Actions -->
+                <div class="flex space-x-2">
+                  <button (click)="toggleLearnerStatus(learner)"
+                          [class]="learner.active ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'"
+                          class="flex-1 text-white text-sm px-3 py-2 rounded-lg">
+                    {{ learner.active ? 'Deactivate' : 'Activate' }}
+                  </button>
+                  <button (click)="viewLearnerDetails(learner)"
+                          class="bg-blue-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-700">
+                    Details
+                  </button>
+                </div>
+
+                <!-- Additional Actions -->
+                <div class="flex space-x-2">
+                  <button (click)="viewLearnerSessions(learner)"
+                          class="bg-purple-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-purple-700">
+                    Sessions
+                  </button>
+                  <button (click)="editLearner(learner)"
+                          class="bg-gray-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-gray-700">
+                    Edit
+                  </button>
+                  <button (click)="deleteUser(learner.id, 'learner')"
+                          class="px-3 py-2 text-sm text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -206,10 +367,18 @@
 
         <!-- Bookings Tab -->
         <div *ngIf="activeTab === 'bookings'">
+          <div class="mb-4 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-[#0d141c]">Session Management</h3>
+            <button (click)="showBookingStatistics()"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+              View Statistics
+            </button>
+          </div>
+
           <div *ngIf="loading" class="text-center py-8">Loading bookings...</div>
           <div *ngIf="error" class="text-red-600 text-center py-8">{{ error }}</div>
           <div *ngIf="!loading && getFilteredBookings().length === 0" class="text-center py-8 text-gray-500">No bookings found.</div>
-          
+
           <div *ngIf="!loading && getFilteredBookings().length > 0" class="space-y-4">
             <div *ngFor="let booking of getFilteredBookings()" class="border border-[#eef1f4] rounded-xl p-4 hover:shadow-md transition-shadow">
               <div class="flex items-center justify-between">
@@ -218,41 +387,130 @@
                     <div>
                       <p class="font-semibold text-[#0d141c]">#{{ booking.id }}</p>
                       <p class="text-sm text-gray-600">{{ booking.mentorName || booking.mentorId }} → {{ booking.apprenantName || booking.apprenantId }}</p>
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      {{ booking.dateTime | date:'short' }}
+                      <p class="text-xs text-gray-500">{{ formatDate(booking.dateTime) }}</p>
+                      <p *ngIf="booking.notes" class="text-xs text-gray-400 mt-1">{{ booking.notes }}</p>
                     </div>
                   </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <span [class]="{
-                    'bg-yellow-100 text-yellow-800': booking.status === 'pending',
-                    'bg-green-100 text-green-800': booking.status === 'confirmed',
-                    'bg-red-100 text-red-800': booking.status === 'cancelled',
-                    'bg-blue-100 text-blue-800': booking.status === 'completed'
-                  }" 
-                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
+                  <span [ngClass]="getBookingStatusBadgeClass(booking.status)"
+                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
                     {{ booking.status | titlecase }}
                   </span>
                 </div>
               </div>
-              
+
+              <!-- Cancellation info if present -->
+              <div *ngIf="booking.status === 'CANCELLED' && (booking.cancellationReason || booking.cancellationType)"
+                   class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p class="text-sm text-red-800">
+                  <strong>Cancelled:</strong> {{ booking.cancellationType || 'Unknown reason' }}
+                </p>
+                <p *ngIf="booking.cancellationReason" class="text-xs text-red-700 mt-1">
+                  {{ booking.cancellationReason }}
+                </p>
+              </div>
+
               <div class="mt-3 flex space-x-2">
-                <button *ngIf="booking.status === 'pending'" 
-                        (click)="updateBookingStatus(booking, 'confirmed')" 
+                <button *ngIf="booking.status === 'PENDING'"
+                        (click)="updateBookingStatus(booking, 'CONFIRMED')"
                         class="bg-green-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-green-700">
                   Confirm
                 </button>
-                <button *ngIf="booking.status === 'pending'" 
-                        (click)="updateBookingStatus(booking, 'cancelled')" 
-                        class="bg-red-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-red-700">
-                  Cancel
+                <button *ngIf="booking.status === 'CONFIRMED'"
+                        (click)="updateBookingStatus(booking, 'COMPLETED')"
+                        class="bg-blue-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-blue-700">
+                  Mark Complete
                 </button>
-                <button (click)="deleteBooking(booking)" 
+                <button *ngIf="booking.status !== 'CANCELLED' && booking.status !== 'COMPLETED'"
+                        (click)="forceCancelBooking(booking)"
+                        class="bg-red-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-red-700">
+                  Force Cancel
+                </button>
+                <button (click)="deleteBooking(booking)"
                         class="text-red-600 text-sm px-3 py-1 border border-red-300 rounded-lg hover:bg-red-50">
                   Delete
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar Tab -->
+        <div *ngIf="activeTab === 'calendar'">
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-[#0d141c]">Global Session Calendar</h3>
+              <div class="flex items-center space-x-4">
+                <button (click)="changeCalendarMonth(-1)"
+                        class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-300">
+                  Previous
+                </button>
+                <span class="font-semibold text-lg">
+                  {{ getMonthName(currentMonth) }} {{ currentYear }}
+                </span>
+                <button (click)="changeCalendarMonth(1)"
+                        class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg hover:bg-gray-300">
+                  Next
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="calendarData" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              <!-- Calendar Stats -->
+              <div class="lg:col-span-1">
+                <div class="bg-gray-50 rounded-xl p-4">
+                  <h4 class="font-semibold text-gray-900 mb-3">Monthly Overview</h4>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span>Total Sessions:</span>
+                      <span class="font-semibold">{{ calendarData.totalBookings || 0 }}</span>
+                    </div>
+                    <div *ngFor="let stat of getCalendarStats()" class="flex justify-between">
+                      <span>{{ stat.label }}:</span>
+                      <span class="font-semibold" [ngClass]="stat.class">{{ stat.value }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calendar Days -->
+              <div class="lg:col-span-3">
+                <div class="bg-white rounded-xl border border-gray-200 p-4">
+                  <div class="grid grid-cols-7 gap-2 mb-4">
+                    <div *ngFor="let day of getDaysOfWeek()" class="text-center font-semibold text-gray-600 p-2">
+                      {{ day }}
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-7 gap-2">
+                    <div *ngFor="let day of getCalendarDays()"
+                         class="min-h-[100px] border border-gray-200 rounded p-2 relative"
+                         [ngClass]="{
+                           'bg-gray-50': !day.isCurrentMonth,
+                           'bg-blue-50': day.isToday
+                         }">
+                      <div class="text-sm font-semibold text-gray-700 mb-1">{{ day.day }}</div>
+
+                      <div *ngIf="day.bookings && day.bookings.length > 0" class="space-y-1">
+                        <div *ngFor="let booking of day.bookings.slice(0, 2)"
+                             class="text-xs p-1 rounded truncate"
+                             [ngClass]="getBookingStatusBadgeClass(booking.status)">
+                          {{ booking.mentorName }} - {{ booking.apprenantName }}
+                        </div>
+                        <div *ngIf="day.bookings.length > 2"
+                             class="text-xs text-gray-500 font-medium">
+                          +{{ day.bookings.length - 2 }} more
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="!calendarData" class="text-center py-8 text-gray-500">
+              Loading calendar data...
             </div>
           </div>
         </div>
@@ -268,40 +526,590 @@
                   <span class="font-semibold">{{ totalMentors }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-gray-600">Total Learners:</span>
-                  <span class="font-semibold">{{ totalLearners }}</span>
+                  <span class="text-gray-600">Pending Mentors:</span>
+                  <span class="font-semibold text-yellow-600">{{ pendingMentors }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-gray-600">Total Users:</span>
-                  <span class="font-semibold">{{ totalMentors + totalLearners }}</span>
+                  <span class="text-gray-600">Approved Mentors:</span>
+                  <span class="font-semibold text-green-600">{{ approvedMentors }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Total Learners:</span>
+                  <span class="font-semibold">{{ totalLearners }}</span>
                 </div>
               </div>
             </div>
 
             <div class="bg-gray-50 rounded-xl p-6">
-              <h3 class="text-lg font-semibold text-[#0d141c] mb-4">Booking Statistics</h3>
+              <h3 class="text-lg font-semibold text-[#0d141c] mb-4">Activity Statistics</h3>
               <div class="space-y-3">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Total Sessions:</span>
+                  <span class="font-semibold">{{ totalSessions }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Total Evaluations:</span>
+                  <span class="font-semibold">{{ totalEvaluations }}</span>
+                </div>
                 <div class="flex justify-between">
                   <span class="text-gray-600">Total Bookings:</span>
                   <span class="font-semibold">{{ totalBookings }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-gray-600">Pending:</span>
+                  <span class="text-gray-600">Pending Bookings:</span>
                   <span class="font-semibold text-yellow-600">{{ pendingBookings }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-gray-600">Confirmed:</span>
+                  <span class="text-gray-600">Confirmed Bookings:</span>
                   <span class="font-semibold text-green-600">{{ confirmedBookings }}</span>
                 </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Completion Rate:</span>
-                  <span class="font-semibold">{{ totalBookings > 0 ? ((confirmedBookings / totalBookings) * 100 | number:'1.1-1') : 0 }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluations Tab -->
+        <div *ngIf="activeTab === 'evaluations'">
+          <div *ngIf="loading" class="text-center py-8">Loading evaluations...</div>
+          <div *ngIf="error" class="text-red-600 text-center py-8">{{ error }}</div>
+          <div *ngIf="!loading && getFilteredEvaluations().length === 0" class="text-center py-8 text-gray-500">No evaluations found.</div>
+
+          <div *ngIf="!loading && getFilteredEvaluations().length > 0" class="space-y-4">
+            <div *ngFor="let evaluation of getFilteredEvaluations()" class="border border-[#eef1f4] rounded-xl p-4 hover:shadow-md transition-shadow">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-4">
+                    <div class="text-2xl">{{ getRatingStars(evaluation.note) }}</div>
+                    <div>
+                      <p class="font-semibold text-[#0d141c]">Rating: {{ evaluation.note }}/5</p>
+                      <p class="text-sm text-gray-600">Session #{{ evaluation.sessionId }}</p>
+                      <p class="text-xs text-gray-500">{{ evaluation.date | date:'medium' }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="evaluation.commentaire" class="mt-3 p-3 bg-gray-50 rounded-lg">
+                <p class="text-sm text-gray-700">{{ evaluation.commentaire }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sessions Tab -->
+        <div *ngIf="activeTab === 'sessions'">
+          <div class="mb-4 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-[#0d141c]">All Sessions</h3>
+            <div class="flex space-x-2">
+              <select [(ngModel)]="mentorFilter"
+                      class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                <option value="all">All Mentors</option>
+                <option *ngFor="let mentor of mentors" [value]="mentor.id">{{ mentor.nom }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div *ngIf="loading" class="text-center py-8">Loading sessions...</div>
+          <div *ngIf="error" class="text-red-600 text-center py-8">{{ error }}</div>
+          <div *ngIf="!loading && getFilteredSessions().length === 0" class="text-center py-8 text-gray-500">No sessions found.</div>
+
+          <div *ngIf="!loading && getFilteredSessions().length > 0" class="space-y-4">
+            <div *ngFor="let session of getFilteredSessions()" class="border border-[#eef1f4] rounded-xl p-4 hover:shadow-md transition-shadow">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-blue-100 rounded-lg">
+                      <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-[#0d141c] text-lg">{{ session.sujet || 'Session #' + session.id }}</p>
+                      <p class="text-sm text-gray-600 mt-1">
+                        <span class="inline-flex items-center">
+                          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          </svg>
+                          {{ session.dateHeure | date:'full' }}
+                        </span>
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">Session ID: #{{ session.id }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="space-y-2">
+                    <div class="flex items-center text-sm text-gray-600">
+                      <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                      </svg>
+                      <strong>Mentor:</strong> {{ getMentorName(session.mentorId) }}
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                      <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                      </svg>
+                      <strong>Learner:</strong> {{ getLearnerName(session.apprenantId) }}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mentor Detail Modal -->
+<div *ngIf="mentorDetailModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Mentor Details - {{ selectedMentor?.nom }}</h2>
+      <button class="text-[#49739c] text-sm" (click)="closeMentorDetailModal()">Close</button>
+    </div>
+
+    <div *ngIf="selectedMentor" class="space-y-6">
+      <!-- Basic Info -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Basic Information</h3>
+          <div class="space-y-2 text-sm">
+            <p><strong>Name:</strong> {{ selectedMentor.nom }}</p>
+            <p><strong>Email:</strong> {{ selectedMentor.email }}</p>
+            <p><strong>Status:</strong>
+              <span [ngClass]="getStatusBadgeClass(selectedMentor.status)" class="px-2 py-1 rounded-full text-xs">
+                {{ selectedMentor.status }}
+              </span>
+            </p>
+            <p><strong>Available:</strong> {{ selectedMentor.available ? 'Yes' : 'No' }}</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Professional Info</h3>
+          <div class="space-y-2 text-sm">
+            <p><strong>Skills:</strong> {{ selectedMentor.competences }}</p>
+            <p><strong>Experience:</strong> {{ selectedMentor.experience }}</p>
+            <p *ngIf="selectedMentor.createdAt"><strong>Registered:</strong> {{ selectedMentor.createdAt | date:'medium' }}</p>
+            <p *ngIf="selectedMentor.updatedAt"><strong>Last Updated:</strong> {{ selectedMentor.updatedAt | date:'medium' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div *ngIf="selectedMentorStats" class="bg-gray-50 rounded-lg p-4">
+        <h3 class="font-semibold text-gray-900 mb-3">Statistics</h3>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p class="text-2xl font-bold text-blue-600">{{ selectedMentorStats.totalSessions }}</p>
+            <p class="text-sm text-gray-600">Total Sessions</p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-green-600">{{ selectedMentorStats.totalEvaluations }}</p>
+            <p class="text-sm text-gray-600">Evaluations</p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-yellow-600">{{ selectedMentorStats.averageRating | number:'1.1-1' }}</p>
+            <p class="text-sm text-gray-600">Avg Rating</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mentor Evaluations Modal -->
+<div *ngIf="mentorEvaluationsModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Evaluations for {{ selectedMentor?.nom }}</h2>
+      <button class="text-[#49739c] text-sm" (click)="closeMentorEvaluationsModal()">Close</button>
+    </div>
+
+    <div class="max-h-96 overflow-y-auto">
+      <div *ngIf="selectedMentorEvaluations.length === 0" class="text-center text-gray-500 py-8">
+        This mentor has no evaluations yet.
+      </div>
+
+      <div *ngFor="let evaluation of selectedMentorEvaluations" class="border border-gray-200 rounded-lg p-4 mb-4">
+        <div class="flex items-center justify-between mb-2">
+          <div class="text-2xl">{{ getRatingStars(evaluation.note) }}</div>
+          <div class="text-sm text-gray-500">{{ evaluation.date | date:'medium' }}</div>
+        </div>
+        <div class="text-sm text-gray-600 mb-1">Session #{{ evaluation.sessionId }}</div>
+        <div *ngIf="evaluation.commentaire" class="text-sm text-gray-700 bg-gray-50 p-3 rounded">
+          {{ evaluation.commentaire }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mentor Sessions Modal -->
+<div *ngIf="mentorSessionsModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Sessions for {{ selectedMentor?.nom }}</h2>
+      <button class="text-[#49739c] text-sm" (click)="closeMentorSessionsModal()">Close</button>
+    </div>
+
+    <div class="max-h-96 overflow-y-auto">
+      <div *ngIf="selectedMentorSessions.length === 0" class="text-center text-gray-500 py-8">
+        This mentor has no sessions yet.
+      </div>
+
+      <div *ngFor="let session of selectedMentorSessions" class="border border-gray-200 rounded-lg p-4 mb-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="font-semibold text-gray-900">{{ session.sujet }}</h4>
+            <p class="text-sm text-gray-600">Session #{{ session.id }}</p>
+            <p class="text-sm text-gray-500">{{ session.dateHeure | date:'medium' }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-gray-600">Learner: {{ getLearnerName(session.apprenantId) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mentor Edit Modal -->
+<div *ngIf="mentorEditModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Edit Mentor - {{ selectedMentor?.nom }}</h2>
+      <button class="text-gray-500 text-sm" (click)="closeMentorEditModal()">Cancel</button>
+    </div>
+
+    <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+          <input type="text" [(ngModel)]="editMentorForm.nom"
+                 placeholder="Mentor name"
+                 class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+          <input type="email" [(ngModel)]="editMentorForm.email"
+                 placeholder="mentor@example.com"
+                 class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Skills/Competences *</label>
+        <textarea [(ngModel)]="editMentorForm.competences"
+                  placeholder="Java, Spring Boot, Angular, etc."
+                  class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  rows="2"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+        <textarea [(ngModel)]="editMentorForm.experience"
+                  placeholder="Years of experience and background"
+                  class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  rows="3"></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+          <select [(ngModel)]="editMentorForm.status"
+                  class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="PENDING">Pending</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+        </div>
+
+        <div class="flex items-center mt-6">
+          <input type="checkbox" [(ngModel)]="editMentorForm.available"
+                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+          <label class="ml-2 text-sm text-gray-700">Available for sessions</label>
+        </div>
+      </div>
+
+      <div class="flex space-x-3 pt-4">
+        <button (click)="saveMentorChanges()"
+                [disabled]="!editMentorForm.nom?.trim() || !editMentorForm.email?.trim() || !editMentorForm.competences?.trim()"
+                class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
+          Save Changes
+        </button>
+        <button (click)="closeMentorEditModal()"
+                class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Learner Detail Modal -->
+<div *ngIf="learnerDetailModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-3xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Learner Details - {{ selectedLearner?.nom }}</h2>
+      <button class="text-[#49739c] text-sm" (click)="closeLearnerDetailModal()">Close</button>
+    </div>
+
+    <div *ngIf="selectedLearner" class="space-y-6">
+      <!-- Basic Info -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Basic Information</h3>
+          <div class="space-y-2 text-sm">
+            <p><strong>Name:</strong> {{ selectedLearner.nom }}</p>
+            <p><strong>Email:</strong> {{ selectedLearner.email }}</p>
+            <p><strong>Status:</strong>
+              <span [class]="selectedLearner.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                    class="px-2 py-1 rounded-full text-xs">
+                {{ selectedLearner.active ? 'Active' : 'Inactive' }}
+              </span>
+            </p>
+            <p *ngIf="selectedLearner.createdAt"><strong>Registered:</strong> {{ selectedLearner.createdAt | date:'medium' }}</p>
+            <p *ngIf="selectedLearner.updatedAt"><strong>Last Updated:</strong> {{ selectedLearner.updatedAt | date:'medium' }}</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-gray-900 mb-2">Learning Profile</h3>
+          <div class="space-y-2 text-sm">
+            <p><strong>Education Level:</strong> {{ selectedLearner.niveau || 'Not specified' }}</p>
+            <div>
+              <p class="font-medium mb-1">Learning Objectives:</p>
+              <p class="text-gray-700 bg-gray-50 p-2 rounded text-xs">{{ selectedLearner.objectifs || 'No objectives specified' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div *ngIf="selectedLearnerStats" class="bg-gray-50 rounded-lg p-4">
+        <h3 class="font-semibold text-gray-900 mb-3">Learning Statistics</h3>
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p class="text-2xl font-bold text-blue-600">{{ selectedLearnerStats.totalSessions }}</p>
+            <p class="text-sm text-gray-600">Sessions Attended</p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-green-600">{{ selectedLearnerStats.totalEvaluations }}</p>
+            <p class="text-sm text-gray-600">Evaluations Given</p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-yellow-600">{{ selectedLearnerStats.averageRatingGiven | number:'1.1-1' }}</p>
+            <p class="text-sm text-gray-600">Avg Rating Given</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Learner Sessions Modal -->
+<div *ngIf="learnerSessionsModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Sessions for {{ selectedLearner?.nom }}</h2>
+      <button class="text-[#49739c] text-sm" (click)="closeLearnerSessionsModal()">Close</button>
+    </div>
+
+    <div class="max-h-96 overflow-y-auto">
+      <div *ngIf="selectedLearnerSessions.length === 0" class="text-center text-gray-500 py-8">
+        This learner has no sessions yet.
+      </div>
+
+      <div *ngFor="let session of selectedLearnerSessions" class="border border-gray-200 rounded-lg p-4 mb-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h4 class="font-semibold text-gray-900">{{ session.sujet }}</h4>
+            <p class="text-sm text-gray-600">Session #{{ session.id }}</p>
+            <p class="text-sm text-gray-500">{{ session.dateHeure | date:'medium' }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-gray-600">Mentor: {{ getMentorName(session.mentorId) }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Learner Bookings Modal -->
+<div *ngIf="bookingModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Bookings for {{ selectedLearner?.nom }}</h2>
+      <button class="text-[#49739c] text-sm" (click)="closeBookingModal()">Close</button>
+    </div>
+    <div class="mt-5 space-y-4">
+      <div *ngIf="learnerBookings.length === 0" class="text-center text-gray-500">
+        This learner has no bookings.
+      </div>
+      <div *ngFor="let booking of learnerBookings" class="border border-[#eef1f4] rounded-xl p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <div class="flex items-center space-x-4">
+              <div>
+                <p class="font-semibold text-[#0d141c]">#{{ booking.id }}</p>
+                <p class="text-sm text-gray-600">{{ booking.mentorName || booking.mentorId }}</p>
+              </div>
+              <div class="text-sm text-gray-500">
+                {{ booking.dateTime | date:'short' }}
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span [class]="{
+              'bg-yellow-100 text-yellow-800': booking.status === 'PENDING',
+              'bg-green-100 text-green-800': booking.status === 'CONFIRMED',
+              'bg-red-100 text-red-800': booking.status === 'CANCELLED',
+              'bg-blue-100 text-blue-800': booking.status === 'COMPLETED'
+            }"
+            class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium">
+              {{ booking.status | titlecase }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Force Cancellation Modal -->
+<div *ngIf="forceCancelModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-red-600 text-xl font-extrabold">Force Cancel Session</h2>
+      <button class="text-gray-500 text-sm" (click)="closeForceCancelModal()">Cancel</button>
+    </div>
+
+    <div class="space-y-4">
+      <p class="text-gray-700">Are you sure you want to force cancel session <strong>#{{ selectedBookingForCancel?.id }}</strong>?</p>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Cancellation Type</label>
+        <select [(ngModel)]="cancellationType"
+                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500">
+          <option value="ADMIN_FORCED">Admin Forced</option>
+          <option value="MENTOR_UNAVAILABLE">Mentor Unavailable</option>
+          <option value="TECHNICAL_ISSUE">Technical Issue</option>
+          <option value="EMERGENCY">Emergency</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Cancellation Reason *</label>
+        <textarea [(ngModel)]="cancellationReason"
+                  placeholder="Please provide a detailed reason for cancellation..."
+                  class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  rows="3"></textarea>
+      </div>
+
+      <div class="flex space-x-3">
+        <button (click)="confirmForceCancellation()"
+                [disabled]="!cancellationReason.trim()"
+                class="flex-1 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
+          Force Cancel
+        </button>
+        <button (click)="closeForceCancelModal()"
+                class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Booking Statistics Modal -->
+<div *ngIf="bookingStatsModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+  <div class="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-[#0d141c] text-xl font-extrabold">Booking Statistics</h2>
+      <div class="flex items-center space-x-4">
+        <select [(ngModel)]="statisticsPeriod" (change)="loadBookingStatistics()"
+                class="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+          <option value="week">Last Week</option>
+          <option value="month">Last Month</option>
+          <option value="year">Last Year</option>
+          <option value="all">All Time</option>
+        </select>
+        <button class="text-[#49739c] text-sm" (click)="closeBookingStatsModal()">Close</button>
+      </div>
+    </div>
+
+    <div *ngIf="bookingStatistics" class="space-y-6">
+      <!-- Overview Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-blue-50 rounded-lg p-4 text-center">
+          <p class="text-2xl font-bold text-blue-600">{{ bookingStatistics.totalBookings }}</p>
+          <p class="text-sm text-blue-800">Total Bookings</p>
+        </div>
+        <div class="bg-yellow-50 rounded-lg p-4 text-center">
+          <p class="text-2xl font-bold text-yellow-600">{{ bookingStatistics.pendingBookings }}</p>
+          <p class="text-sm text-yellow-800">Pending</p>
+        </div>
+        <div class="bg-green-50 rounded-lg p-4 text-center">
+          <p class="text-2xl font-bold text-green-600">{{ bookingStatistics.completedBookings }}</p>
+          <p class="text-sm text-green-800">Completed</p>
+        </div>
+        <div class="bg-red-50 rounded-lg p-4 text-center">
+          <p class="text-2xl font-bold text-red-600">{{ bookingStatistics.cancelledBookings }}</p>
+          <p class="text-sm text-red-800">Cancelled</p>
+        </div>
+        <div class="bg-purple-50 rounded-lg p-4 text-center">
+          <p class="text-2xl font-bold text-purple-600">{{ bookingStatistics.completionRate }}%</p>
+          <p class="text-sm text-purple-800">Completion Rate</p>
+        </div>
+      </div>
+
+      <!-- Cancellation Types -->
+      <div *ngIf="bookingStatistics.cancellationTypes && Object.keys(bookingStatistics.cancellationTypes).length > 0"
+           class="bg-gray-50 rounded-lg p-4">
+        <h3 class="font-semibold text-gray-900 mb-3">Cancellation Breakdown</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div *ngFor="let item of getObjectEntries(bookingStatistics.cancellationTypes)"
+               class="text-center">
+            <p class="text-lg font-bold text-gray-700">{{ item.value }}</p>
+            <p class="text-xs text-gray-600">{{ item.key | titlecase }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Performers -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">Most Active Mentors</h3>
+          <div class="space-y-2">
+            <div *ngFor="let item of getObjectEntries(bookingStatistics.topMentors)"
+                 class="flex justify-between text-sm">
+              <span class="text-gray-700">{{ item.key }}</span>
+              <span class="font-semibold text-blue-600">{{ item.value }} sessions</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4">
+          <h3 class="font-semibold text-gray-900 mb-3">Most Active Learners</h3>
+          <div class="space-y-2">
+            <div *ngFor="let item of getObjectEntries(bookingStatistics.topLearners)"
+                 class="flex justify-between text-sm">
+              <span class="text-gray-700">{{ item.key }}</span>
+              <span class="font-semibold text-green-600">{{ item.value }} sessions</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!bookingStatistics" class="text-center py-8 text-gray-500">
+      Loading statistics...
     </div>
   </div>
 </div>

@@ -42,10 +42,8 @@ export class BookingService {
   }
 
   // Backend endpoint expects status as request param: PUT /{id}/status?status=CONFIRMED
-  updateBookingStatus(id: string, status: 'pending' | 'confirmed' | 'cancelled' | 'completed'): Observable<Booking> {
-    // Map to backend's uppercase values if needed
-    const mapped = status.toUpperCase();
-    return this.http.put<Booking>(`${this.apiUrl}/${id}/status`, {}, { params: { status: mapped } })
+  updateBookingStatus(id: string, status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED'): Observable<Booking> {
+    return this.http.put<Booking>(`${this.apiUrl}/${id}/status`, {}, { params: { status } })
       .pipe(
         catchError(this.handleError)
       );
