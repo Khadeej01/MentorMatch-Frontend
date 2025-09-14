@@ -1,6 +1,6 @@
 <div class="container mx-auto p-6">
   <!-- Header -->
-  <div class="flex items-center justify-between mb-6">
+  <div class="flex items-center justify-between mb-4">
     <div class="flex items-center gap-4">
       <div class="h-12 w-12 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-lg font-bold">
         {{ (currentUser?.fullName || currentUser?.email || 'U') | slice:0:1 | uppercase }}
@@ -13,97 +13,135 @@
       </div>
     </div>
     <div class="hidden md:flex gap-2">
-      <a routerLink="/mentors" class="rounded-full bg-[#0d141c] text-white text-sm px-4 py-2 font-semibold">Find a mentor</a>
-      <a routerLink="/learner-dashboard" class="rounded-full bg-[#f1f2f4] text-[#0d141c] text-sm px-4 py-2 font-semibold">Edit profile</a>
+      <button class="rounded-full bg-[#f1f2f4] text-[#0d141c] text-sm px-4 py-2 font-semibold" (click)="openEditProfile()">Edit profile</button>
     </div>
   </div>
 
-  <!-- Profile + Onboarding + Stats -->
+  <!-- Colorful banner -->
+  <div class="mb-6 rounded-xl bg-gradient-to-r from-[#8DBCC7] via-[#7c3aed] to-[#f59e0b] p-[1px]">
+    <div class="rounded-xl bg-white/70 backdrop-blur px-4 py-3 flex items-center justify-between">
+      <div class="text-sm font-semibold text-[#0d141c]">Welcome back</div>
+      <span class="text-xs text-[#0d141c]/70">Find mentors and book sessions</span>
+    </div>
+  </div>
+
+  <!-- Centered profile summary -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-    <div class="col-span-2 rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
-      <div class="text-sm text-[#6b7280]">Your profile</div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+    <div class="lg:col-start-2 lg:col-span-1 rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+      <div class="text-sm font-semibold text-[#7c3aed]">Your profile</div>
+      <div class="text-xl font-semibold text-[#0d141c]">{{ backendLearner?.nom || currentUser?.fullName }}</div>
+      <div class="mt-2 text-sm">Role: <span class="inline-flex items-center gap-1 font-medium text-[#0d141c]"><span class="h-2 w-2 rounded-full bg-[#8DBCC7]"></span>{{ currentUser?.role }}</span></div>
+      <div class="mt-4 space-y-3">
         <div>
           <label class="text-sm text-[#6b7280]">Level</label>
-          <input class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" [(ngModel)]="level" (blur)="saveLearnerProfile()" placeholder="e.g. Beginner" />
+          <div class="text-base font-medium text-[#0d141c] mt-1">{{ level || 'Not set' }}</div>
         </div>
         <div>
           <label class="text-sm text-[#6b7280]">Objectives</label>
-          <input class="mt-1 w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" [(ngModel)]="objectives" (blur)="saveLearnerProfile()" placeholder="e.g. Learn Angular" />
+          <div class="text-base font-medium text-[#0d141c] mt-1">{{ objectives || 'Not set' }}</div>
         </div>
+        <div class="mt-2 text-xs text-green-700" *ngIf="profileSaveMessage">{{ profileSaveMessage }}</div>
       </div>
       <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
         <div class="rounded-xl border border-[#eef1f4] p-4">
           <div class="text-xs text-[#6b7280]">Upcoming</div>
           <div class="text-xl font-bold mt-1">{{ bookings.length || 0 }}</div>
         </div>
-        <div class="rounded-xl border border-[#eef1f4] p-4">
-          <div class="text-xs text-[#6b7280]">Goals set</div>
-          <div class="text-xl font-bold mt-1">{{ objectives ? 1 : 0 }}</div>
-        </div>
       </div>
-    </div>
-    <div class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
-      <div class="font-semibold mb-2">Getting started</div>
-      <ul class="list-disc pl-5 text-sm text-[#0d141c]">
-        <li class="mb-1">Set your goals (objectives)</li>
-        <li class="mb-1">Complete your profile (add level)</li>
-        <li>Find a mentor below and book a session</li>
-      </ul>
     </div>
   </div>
 
-  <!-- Search mentors -->
-  <div class="mb-8">
-    <div class="flex items-center gap-3 mb-3">
-      <input [(ngModel)]="searchTerm" (keyup.enter)="searchMentors()" class="flex-1 rounded-lg border border-[#dde1e4] px-3 py-2 text-sm" placeholder="Search mentors by name or skill..." />
-      <button class="rounded-lg bg-[#0d141c] text-white text-sm px-4 py-2 font-semibold" (click)="searchMentors()">Search</button>
+  <!-- Edit profile modal -->
+  <div *ngIf="editOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+    <div class="w-full max-w-[460px] rounded-2xl bg-white p-6 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-[#0d141c] text-xl font-extrabold">Edit profile</h2>
+        <button class="text-[#49739c] text-sm" (click)="closeEditProfile()">Close</button>
+      </div>
+      <form class="mt-5 space-y-4" (ngSubmit)="submitEditProfile()">
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-[#0d141c]">Full name</label>
+          <input class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" type="text" [(ngModel)]="editFullName" name="editFullName" placeholder="Jane Doe" required />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-[#0d141c]">Objectives</label>
+          <input class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" type="text" [(ngModel)]="editObjectifs" name="editObjectifs" placeholder="e.g. Learn Angular" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-[#0d141c]">Level</label>
+          <input class="w-full rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:border-[#9db7cf] focus:outline-none" type="text" [(ngModel)]="editNiveau" name="editNiveau" placeholder="e.g. Beginner" />
+        </div>
+        <button class="w-full rounded-lg bg-[#0d141c] py-2 text-sm font-bold text-white" type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Recherche mentors -->
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold mb-3 flex items-center gap-2 text-[#0d141c]"><span class="inline-block h-5 w-1.5 rounded-full bg-[#7c3aed]"></span> Recherche</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+      <input [(ngModel)]="searchTerm" (keyup.enter)="searchMentors()" class="md:col-span-2 rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:ring-2 focus:ring-[#8DBCC7] focus:border-[#8DBCC7] outline-none" placeholder="Nom, email, compétences..." />
+      <select [(ngModel)]="selectedCompetence" class="rounded-lg border border-[#dde1e4] px-3 py-2 text-sm focus:ring-2 focus:ring-[#8DBCC7] focus:border-[#8DBCC7] outline-none">
+        <option value="">Toutes les compétences</option>
+        <option *ngFor="let c of competences" [value]="c">{{ c }}</option>
+      </select>
+      <label class="inline-flex items-center gap-2 text-sm text-[#0d141c]">
+        <input type="checkbox" [(ngModel)]="showAvailableOnly" /> Disponibles uniquement
+      </label>
+    </div>
+    <div class="flex items-center gap-2 mb-3">
+      <button class="rounded-lg bg-[#0d141c] text-white text-sm px-4 py-2 font-semibold" (click)="searchMentors()">Rechercher</button>
+      <button class="rounded-lg bg-gray-100 text-[#0d141c] text-sm px-4 py-2 font-semibold" (click)="clearFilters()">Effacer les filtres</button>
     </div>
     <div *ngIf="searchResults.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div *ngFor="let m of searchResults" class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
-        <div class="flex items-start gap-3">
-          <div class="h-10 w-10 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-sm font-bold">
-            {{ (m.nom || 'M') | slice:0:1 | uppercase }}
+      <div *ngFor="let m of searchResults" class="rounded-2xl bg-gradient-to-tr from-white to-[#f8fafc] p-[1px] shadow-sm hover:shadow-md transition-shadow">
+        <div class="rounded-2xl border border-[#eef1f4] bg-white p-5">
+          <div class="flex items-start gap-3">
+            <div class="h-10 w-10 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-sm font-bold">
+              {{ (m.nom || 'M') | slice:0:1 | uppercase }}
+            </div>
+            <div class="flex-1">
+              <div class="font-semibold text-[#0d141c]">{{ m.nom }}</div>
+                            <div class="text-xs text-[#6b7280] mt-0.5" [ngClass]="{'hover:text-green-700': m.available}">{{ m.available ? 'Available' : 'Unavailable' }}</div>
+            </div>
           </div>
-          <div class="flex-1">
-            <div class="font-semibold text-[#0d141c]">{{ m.nom }}</div>
-            <div class="text-xs text-[#6b7280] mt-0.5">{{ m.available ? 'Available' : 'Unavailable' }}</div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span *ngFor="let tag of (m.competences || '').split(',')" class="inline-flex items-center rounded-full bg-[#eef3f8] px-2 py-0.5 text-xs font-medium text-[#0d141c]">{{ tag.trim() }}</span>
           </div>
-        </div>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span *ngFor="let tag of (m.competences || '').split(',')" class="inline-flex items-center rounded-full bg-[#eef3f8] px-2 py-0.5 text-xs font-medium text-[#0d141c]">{{ tag.trim() }}</span>
-        </div>
-        <div class="mt-4 grid grid-cols-2 gap-2">
-          <button class="rounded-lg bg-[#0d141c] text-white text-sm px-3 py-2 font-semibold" (click)="openBooking(m)">Book</button>
-          <button class="rounded-lg bg-gray-100 text-[#0d141c] text-sm px-3 py-2 font-semibold" (click)="goToMentor(m)">Profile</button>
+          <div class="mt-4 grid grid-cols-2 gap-2">
+            <button class="rounded-lg bg-gradient-to-r from-[#8DBCC7] to-[#7c3aed] text-white text-sm px-3 py-2 font-semibold shadow-sm hover:shadow" (click)="openBooking(m)">Book</button>
+            <button class="rounded-lg bg-gray-100 text-[#0d141c] text-sm px-3 py-2 font-semibold" (click)="goToMentor(m)">Profile</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Suggested mentors -->
-  <div class="mb-8">
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold mb-3 flex items-center gap-2 text-[#0d141c]"><span class="inline-block h-5 w-1.5 rounded-full bg-[#0ea5e9]"></span> Explore mentors</h2>
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold text-[#0d141c]">Explore mentors</h2>
       <a routerLink="/mentors" class="text-sm text-[#0d141c] font-semibold">View all</a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div *ngFor="let m of suggestedMentors" class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
-        <div class="flex items-start gap-3">
-          <div class="h-10 w-10 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-sm font-bold">
-            {{ (m.nom || 'M') | slice:0:1 | uppercase }}
+      <div *ngFor="let m of suggestedMentors" class="rounded-2xl bg-gradient-to-tr from-white to-[#f8fafc] p-[1px] shadow-sm hover:shadow-md transition-shadow">
+        <div class="rounded-2xl border border-[#eef1f4] bg-white p-5">
+          <div class="flex items-start gap-3">
+            <div class="h-10 w-10 rounded-full bg-[#0d141c] text-white flex items-center justify-center text-sm font-bold">
+              {{ (m.nom || 'M') | slice:0:1 | uppercase }}
+            </div>
+            <div class="flex-1">
+              <div class="font-semibold text-[#0d141c]">{{ m.nom }}</div>
+                            <div class="text-xs text-[#6b7280] mt-0.5" [ngClass]="{'hover:text-green-700': m.available}">{{ m.available ? 'Available' : 'Unavailable' }}</div>
+            </div>
           </div>
-          <div class="flex-1">
-            <div class="font-semibold text-[#0d141c]">{{ m.nom }}</div>
-            <div class="text-xs text-[#6b7280] mt-0.5">{{ m.available ? 'Available' : 'Unavailable' }}</div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <span *ngFor="let tag of (m.competences || '').split(',')" class="inline-flex items-center rounded-full bg-[#eef3f8] px-2 py-0.5 text-xs font-medium text-[#0d141c]">{{ tag.trim() }}</span>
           </div>
-        </div>
-        <div class="mt-3 flex flex-wrap gap-2">
-          <span *ngFor="let tag of (m.competences || '').split(',')" class="inline-flex items-center rounded-full bg-[#eef3f8] px-2 py-0.5 text-xs font-medium text-[#0d141c]">{{ tag.trim() }}</span>
-        </div>
-        <div class="mt-4 grid grid-cols-2 gap-2">
-          <button class="rounded-lg bg-[#0d141c] text-white text-sm px-3 py-2 font-semibold" (click)="openBooking(m)">Book</button>
-          <button class="rounded-lg bg-gray-100 text-[#0d141c] text-sm px-3 py-2 font-semibold" (click)="goToMentor(m)">Profile</button>
+          <div class="mt-4 grid grid-cols-2 gap-2">
+            <button class="rounded-lg bg-gradient-to-r from-[#8DBCC7] to-[#7c3aed] text-white text-sm px-3 py-2 font-semibold shadow-sm hover:shadow" (click)="openBooking(m)">Book</button>
+            <button class="rounded-lg bg-gray-100 text-[#0d141c] text-sm px-3 py-2 font-semibold" (click)="goToMentor(m)">Profile</button>
+          </div>
         </div>
       </div>
     </div>
@@ -111,24 +149,26 @@
   </div>
 
   <!-- Bookings overview -->
-  <div>
-    <h2 class="text-xl font-bold text-[#0d141c] mb-3">Your sessions</h2>
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold mb-3 flex items-center gap-2 text-[#0d141c]"><span class="inline-block h-5 w-1.5 rounded-full bg-[#22c55e]"></span> Your sessions</h2>
     <div *ngIf="loading" class="text-[#6b7280]">Loading bookings...</div>
     <div *ngIf="error" class="text-red-600">{{ error }}</div>
-    <div *ngIf="!loading && bookings.length === 0" class="rounded-xl border border-dashed border-[#e5e7eb] bg-white p-6 text-center text-sm text-[#6b7280]">You don’t have any sessions yet. Find a mentor above to get started.</div>
+    <div *ngIf="!loading && bookings.length === 0" class="rounded-xl border border-dashed border-[#e5e7eb] bg-white p-6 text-center text-sm text-[#6b7280]">You don't have any sessions yet. Find a mentor above to get started.</div>
     <div *ngIf="!loading && bookings.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <div *ngFor="let b of bookings" class="rounded-2xl border border-[#eef1f4] bg-white p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-          <div class="text-sm text-[#6b7280]">#{{ b.id }}</div>
-          <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
-                [ngClass]="{
-                  'bg-green-100 text-green-800': b.status === 'confirmed',
-                  'bg-yellow-100 text-yellow-800': b.status === 'pending',
-                  'bg-gray-100 text-gray-800': b.status !== 'confirmed' && b.status !== 'pending'
-                }">{{ b.status }}</span>
+      <div *ngFor="let b of bookings" class="rounded-2xl bg-gradient-to-tr from-white to-[#f8fafc] p-[1px] shadow-sm hover:shadow-md transition-shadow">
+        <div class="rounded-2xl border border-[#eef1f4] bg-white p-5">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-[#6b7280]">#{{ b.id }}</div>
+            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': b.status === 'CONFIRMED',
+                    'bg-yellow-100 text-yellow-800': b.status === 'PENDING',
+                    'bg-gray-100 text-gray-800': b.status !== 'CONFIRMED' && b.status !== 'PENDING'
+                  }">{{ b.status }}</span>
+          </div>
+          <div class="mt-2 text-sm">Mentor: <span class="font-medium">{{ b.mentorName || b.mentorId }}</span></div>
+          <div class="mt-1 text-sm">Date: {{ b.dateTime | date:'short' }}</div>
         </div>
-        <div class="mt-2 text-sm">Mentor: <span class="font-medium">{{ b.mentorName || b.mentorId }}</span></div>
-        <div class="mt-1 text-sm">Date: {{ b.dateTime | date:'short' }}</div>
       </div>
     </div>
   </div>

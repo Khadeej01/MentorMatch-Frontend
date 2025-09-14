@@ -33,13 +33,26 @@ export class AuthService {
   }
 
   signIn(credentials: {email: string, password: string}): Observable<AuthResponse> {
-    // Backend returns { token, user: { id, nom, email, role } }
-    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+    // Determine if this is an admin login by checking common admin credentials
+    const isAdminLogin = credentials.email === 'admin@example.com' || 
+                        credentials.email === 'admin@mentormatch.com' || 
+                        credentials.email === 'admin';
+    
+    const loginUrl = isAdminLogin ? 'http://localhost:8080/api/admin/login' : `${this.apiUrl}/login`;
+    
+    console.log('AuthService.signIn:', {
+      credentials: { email: credentials.email, password: '***' },
+      isAdminLogin,
+      loginUrl
+    });
+    
+    return this.http.post<any>(loginUrl, credentials).pipe(
       // Map backend payload to our AuthResponse shape
       // Role mapping: APPRENANT->learner, MENTOR->mentor, ADMIN->admin
       // Name mapping: nom -> fullName
       // Token mapping: token -> accessToken
       tap((raw) => {
+        console.log('AuthService.signIn success:', raw);
         const backendUser = raw?.user || {};
         const mappedRole = (backendUser.role || '').toString().toLowerCase() === 'apprenant'
           ? 'learner'
@@ -51,13 +64,17 @@ export class AuthService {
           user: {
             id: String(backendUser.id ?? ''),
             email: backendUser.email ?? '',
-            fullName: backendUser.nom ?? '',
+            fullName: backendUser.nom ?? backendUser.username ?? '',
             role: (['mentor','learner','admin'].includes(mappedRole) ? mappedRole : 'learner') as User['role']
           }
         };
 
         this.setAuthData(response);
         this.currentUserSubject.next(response.user);
+      }),
+      catchError((error) => {
+        console.error('AuthService.signIn error:', error);
+        return throwError(() => error);
       })
     ) as unknown as Observable<AuthResponse>;
   }
@@ -72,12 +89,38 @@ export class AuthService {
   }
 
   // Raw sign up to allow role-specific extra fields
-  signUpRaw(payload: Record<string, unknown>): Observable<{message: string}> {
+  signUpRaw(payload: Record<string, unknown>): Observable<AuthResponse> {
     // Ensure role normalization if present
     if (typeof payload['role'] === 'string') {
       payload['role'] = (payload['role'] as string).toLowerCase();
     }
-    return this.http.post<{message: string}>(`${this.apiUrl}/register`, payload);
+    return this.http.post<any>(`${this.apiUrl}/register`, payload).pipe(
+      tap((raw) => {
+        console.log('AuthService.signUpRaw success:', raw);
+        const backendUser = raw?.user || {};
+        const mappedRole = (backendUser.role || '').toString().toLowerCase() === 'apprenant'
+          ? 'learner'
+          : (backendUser.role || '').toString().toLowerCase();
+
+        const response: AuthResponse = {
+          accessToken: raw?.token || '',
+          refreshToken: '',
+          user: {
+            id: String(backendUser.id ?? ''),
+            email: backendUser.email ?? '',
+            fullName: backendUser.nom ?? backendUser.username ?? '',
+            role: (['mentor','learner','admin'].includes(mappedRole) ? mappedRole : 'learner') as User['role']
+          }
+        };
+
+        this.setAuthData(response);
+        this.currentUserSubject.next(response.user);
+      }),
+      catchError((error) => {
+        console.error('AuthService.signUpRaw error:', error);
+        return throwError(() => error);
+      })
+    ) as unknown as Observable<AuthResponse>;
   }
 
   private setAuthData(data: AuthResponse): void {

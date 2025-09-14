@@ -53,8 +53,7 @@ export const routes: Routes = [
   {
     path: 'mentors',
     component: MentorListComponent,
-    canActivate: [authGuard, roleGuard],
-    data: { expectedRole: 'mentor' }
+    canActivate: [authGuard]
   },
   {
     path: 'mentors/new',

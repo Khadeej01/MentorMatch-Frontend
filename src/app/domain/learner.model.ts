@@ -9,4 +9,5 @@ export interface Learner {
   interests?: string; // For backward compatibility
   createdAt?: string;
   updatedAt?: string;
+  active: boolean;
 }
