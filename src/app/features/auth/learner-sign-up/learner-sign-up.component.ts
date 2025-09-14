@@ -46,8 +46,8 @@ export class LearnerSignUpComponent {
       .subscribe({
         next: (authResponse) => {
           console.log('Registration successful:', authResponse);
-          // User is now automatically logged in, redirect to learner dashboard
-          this.router.navigate(['/learner-dashboard']);
+          // Redirect to sign-in page after successful registration
+          this.router.navigate(['/sign-in']);
         },
         error: (err) => {
           console.error('Registration error details:', err);
