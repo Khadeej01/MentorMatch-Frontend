@@ -55,6 +55,7 @@ export class MentorEditComponent implements OnInit {
       competences: this.mentor.competences,
       experience: this.mentor.experience,
       available: this.mentor.available,
+      active: this.mentor.active,
       role: this.mentor.role
     };
 

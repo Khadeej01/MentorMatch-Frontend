@@ -20,6 +20,7 @@ export class MentorFormComponent implements OnInit {
     competences: '', 
     experience: '', 
     available: true, 
+    active: true,
     role: 'MENTOR', 
     status: 'PENDING'
   };
@@ -78,6 +79,7 @@ export class MentorFormComponent implements OnInit {
         competences: this.mentor.competences,
         experience: this.mentor.experience,
         available: this.mentor.available,
+        active: this.mentor.active,
         role: this.mentor.role
       };
 
@@ -98,6 +100,7 @@ export class MentorFormComponent implements OnInit {
         competences: this.mentor.competences,
         experience: this.mentor.experience,
         available: this.mentor.available,
+        active: this.mentor.active,
         role: this.mentor.role
       };
 
