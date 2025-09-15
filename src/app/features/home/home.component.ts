@@ -19,6 +19,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   @ViewChild('howItWorksViewport') howItWorksViewport: ElementRef | undefined;
 
   mentors: Mentor[] = [];
+  searchTerm: string = '';
+  filteredMentors: Mentor[] = [];
 
   private slideshowTimerId: any;
   private howItWorksTimerId: any;
@@ -26,12 +28,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   private activeLayerA = true;
 
   private _activeWorkCardIndex = 0;
+  private _shouldScrollToCard = false;
+  
   get activeWorkCardIndex(): number {
     return this._activeWorkCardIndex;
   }
   set activeWorkCardIndex(index: number) {
     this._activeWorkCardIndex = index;
-    setTimeout(() => this.scrollToActiveCard(), 0);
+    if (this._shouldScrollToCard) {
+      setTimeout(() => this.scrollToActiveCard(), 0);
+      this._shouldScrollToCard = false;
+    }
   }
 
   howItWorksCards = [
@@ -103,6 +110,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (mentors) => {
         console.log('Mentors loaded:', mentors);
         this.mentors = mentors;
+        this.filteredMentors = [...mentors];
         if (mentors.length === 0) {
           console.log('No mentors found, initializing test mentors...');
           // Try to initialize test mentors if none exist
@@ -114,6 +122,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                 next: (newMentors) => {
                   console.log('Mentors after init:', newMentors);
                   this.mentors = newMentors;
+                  this.filteredMentors = [...newMentors];
                 },
                 error: (err) => {
                   console.error('Error reloading mentors after init:', err);
@@ -164,6 +173,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             status: 'APPROVED'
           }
         ];
+        this.filteredMentors = [...this.mentors];
         console.log('Using fallback mentors:', this.mentors);
       }
     });
@@ -179,11 +189,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   nextWorkCard(): void {
+    this._shouldScrollToCard = true;
     this.activeWorkCardIndex = (this.activeWorkCardIndex + 1) % this.howItWorksCards.length;
     this.resetHowItWorksTimer();
   }
 
   prevWorkCard(): void {
+    this._shouldScrollToCard = true;
     this.activeWorkCardIndex = (this.activeWorkCardIndex - 1 + this.howItWorksCards.length) % this.howItWorksCards.length;
     this.resetHowItWorksTimer();
   }
@@ -254,5 +266,57 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Track by function for mentor list performance
   trackByMentorId(index: number, mentor: Mentor): number {
     return mentor.id;
+  }
+
+  // Search functionality
+  onSearchMentors(): void {
+    if (this.searchTerm.trim()) {
+      // Navigate to mentor list with search parameter
+      this.router.navigate(['/mentors'], { 
+        queryParams: { search: this.searchTerm.trim() } 
+      });
+    } else {
+      // If no search term, just navigate to mentor list
+      this.router.navigate(['/mentors']);
+    }
+  }
+
+  onBrowseMentors(): void {
+    if (this.searchTerm.trim()) {
+      // If there's a search term, perform search
+      this.onSearchMentors();
+    } else {
+      // Navigate to mentor list
+      this.router.navigate(['/mentors']);
+    }
+  }
+
+  // Filter mentors for display on home page (show max 6 mentors)
+  filterMentorsForDisplay(): void {
+    let filtered: Mentor[];
+    
+    if (this.searchTerm.trim()) {
+      const searchLower = this.searchTerm.toLowerCase().trim();
+      filtered = this.mentors.filter(mentor =>
+        (mentor.nom && mentor.nom.toLowerCase().includes(searchLower)) ||
+        (mentor.competences && mentor.competences.toLowerCase().includes(searchLower)) ||
+        (mentor.experience && mentor.experience.toLowerCase().includes(searchLower))
+      );
+    } else {
+      filtered = [...this.mentors];
+    }
+    
+    // Limit to 6 mentors for home page display
+    this.filteredMentors = filtered.slice(0, 6);
+  }
+
+  // Handle search input changes
+  onSearchInputChange(): void {
+    this.filterMentorsForDisplay();
+  }
+
+  // Navigate to mentor detail
+  onMentorClick(mentor: Mentor): void {
+    this.router.navigate(['/mentors', mentor.id]);
   }
 }

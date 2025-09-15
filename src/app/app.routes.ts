@@ -52,8 +52,8 @@ export const routes: Routes = [
   },
   {
     path: 'mentors',
-    component: MentorListComponent,
-    canActivate: [authGuard]
+    component: MentorListComponent
+    // Removed canActivate to allow public access to mentor browsing
   },
   {
     path: 'mentors/new',
@@ -81,8 +81,8 @@ export const routes: Routes = [
   },
   {
     path: 'mentors/:id',
-    component: MentorDetailComponent,
-    canActivate: [authGuard] // Accessible to all logged-in users
+    component: MentorDetailComponent
+    // Removed canActivate to allow public access to mentor details
   },
   {
     path: 'learners/:id/edit',
