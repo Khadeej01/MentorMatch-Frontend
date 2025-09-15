@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MentorService } from '../../../data/mentor.service';
 import { Mentor } from '../../../domain/mentor.model';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-mentor-list',
@@ -20,20 +20,17 @@ export class MentorListComponent implements OnInit {
   
   // Filtres
   searchTerm: string = '';
-  selectedCompetence: string = '';
-  showAvailableOnly: boolean = false;
-  
-  // Compétences disponibles pour le filtre
-  competences: string[] = [
-    'Java', 'Spring Boot', 'React', 'Angular', 'TypeScript', 
-    'Python', 'Data Science', 'Machine Learning', 'DevOps', 
-    'Docker', 'Kubernetes', 'Node.js', 'Express', 'MongoDB'
-  ];
 
-  constructor(private mentorService: MentorService) { }
+  constructor(private mentorService: MentorService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.loadMentors();
+    // Check for query parameters from home page search
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        this.searchTerm = params['search'];
+      }
+      this.loadMentors();
+    });
   }
 
   loadMentors(): void {
@@ -41,12 +38,6 @@ export class MentorListComponent implements OnInit {
     this.error = null;
     
     const filters: any = {};
-    if (this.showAvailableOnly) {
-      filters.available = true;
-    }
-    if (this.selectedCompetence) {
-      filters.competences = this.selectedCompetence;
-    }
     if (this.searchTerm) {
       filters.search = this.searchTerm;
     }
@@ -58,9 +49,50 @@ export class MentorListComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Erreur lors du chargement des mentors.';
+        console.error('Error loading mentors:', err);
+        // Provide fallback mentors for unauthenticated users
+        if (err.status === 401 || err.status === 403) {
+          this.mentors = [
+            {
+              id: 1,
+              nom: 'John Doe',
+              email: 'john@example.com',
+              competences: 'Web Development, React, Node.js',
+              experience: '5+ years in React and Node.js development',
+              available: true,
+              active: true,
+              role: 'MENTOR',
+              status: 'APPROVED'
+            },
+            {
+              id: 2,
+              nom: 'Jane Smith',
+              email: 'jane@example.com',
+              competences: 'UI/UX Design, Figma, Adobe Creative Suite',
+              experience: '7+ years in product design and user experience',
+              available: true,
+              active: true,
+              role: 'MENTOR',
+              status: 'APPROVED'
+            },
+            {
+              id: 3,
+              nom: 'Mike Johnson',
+              email: 'mike@example.com',
+              competences: 'Data Science, Python, Machine Learning',
+              experience: '6+ years in machine learning and data analysis',
+              available: false,
+              active: true,
+              role: 'MENTOR',
+              status: 'APPROVED'
+            }
+          ];
+          this.filteredMentors = [...this.mentors];
+          this.error = null;
+        } else {
+          this.error = 'Erreur lors du chargement des mentors.';
+        }
         this.loading = false;
-        console.error(err);
       }
     });
   }
@@ -69,30 +101,9 @@ export class MentorListComponent implements OnInit {
     this.loadMentors();
   }
 
-  onFilterChange(): void {
-    this.loadMentors();
-  }
-
   clearFilters(): void {
     this.searchTerm = '';
-    this.selectedCompetence = '';
-    this.showAvailableOnly = false;
     this.loadMentors();
-  }
-
-  deleteMentor(id: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce mentor ?')) {
-      this.mentorService.deleteMentor(id).subscribe({
-        next: () => {
-          this.mentors = this.mentors.filter(mentor => mentor.id !== id);
-          this.filteredMentors = this.filteredMentors.filter(mentor => mentor.id !== id);
-        },
-        error: (err) => {
-          this.error = 'Erreur lors de la suppression du mentor.';
-          console.error(err);
-        }
-      });
-    }
   }
 
   initTestMentors(): void {
